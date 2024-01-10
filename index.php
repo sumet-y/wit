@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Message Dialog - jQuery EasyUI Mobile Demo</title>
-    <link rel="stylesheet" type="text/css" href="jquery-easyui-1.10.18/themes/metro/easyui.css">
-    <link rel="stylesheet" type="text/css" href="jquery-easyui-1.10.18/themes/mobile.css">
-    <link rel="stylesheet" type="text/css" href=".jquery-easyui-1.10.18/themes/icon.css">
-    <script type="text/javascript" src="jquery-easyui-1.10.18/jquery.min.js"></script>
-    <script type="text/javascript" src="jquery-easyui-1.10.18/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="jquery-easyui-1.10.18/jquery.easyui.mobile.js"></script>
+    <link rel="stylesheet" type="text/css" href="jquery/themes/metro/easyui.css">
+    <link rel="stylesheet" type="text/css" href="jquery/themes/mobile.css">
+    <link rel="stylesheet" type="text/css" href=".jquery/themes/icon.css">
+    <script type="text/javascript" src="jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="jquery/jquery.easyui.mobile.js"></script>
 </head>
 <body>
     <div class="easyui-navpanel" style="position:relative">
