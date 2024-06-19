@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<!-- partial -->
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.8/index.global.min.js'></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,multiMonthYear'
+    },
+    displayEventTime: false,
+    events: function(fetchInfo, successCallback, failureCallback) {
+          fetch('https://sheets.googleapis.com/v4/spreadsheets/1r2QVzmMaeFRZjn3xpgANYLP5mNkbXYmDxtmLgF68igE/values/Event?alt=json&key=AIzaSyDRcaDoNQJOyTYAPf-s8oThVXairEo2Lgs')
+            .then(response => response.json())
+            .then(data => {
+              //การdata.values.slice(1)โทรข้ามแถวส่วนหัว
+              const events = data.values.slice(1).map(row => ({
+                title: row[0],
+                start: row[1],
+                //end: row[2] ? row[2] : row[1]
+              }));
+              successCallback(events);
+            })
+            .catch(error => {
+              //หากมีข้อผิดพลาดในการดึงข้อมูลจาก Google ชีต API ฟังก์ชันจะถูกเรียกใช้ failureCallback
+              console.error('Error fetching data from Google Sheets:', error);
+              failureCallback(error);
+            });
+        }
+
+  });
+
+  calendar.render();
+});
+
+</script>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 14px;
+}
+
+#calendar {
+  max-width: 1100px;
+  margin: 40px auto;
+}
+
+</style>
+</head>
+<body>
+
+  <div id='calendar'></div>
+<!--
+   การเปลี่ยน Google Sheet เป็น API
+  https://www.youtube.com/watch?v=03eBjlrjYl8
+
+  https://sheets.googleapis.com/v4/spreadsheets/{SPREAD_SHEET_ID}/values/{SHEET_NAME}?alt=json&key={YOUR_API_KEY}
+
+SPREAD_SHEET_ID = 1r2QVzmMaeFRZjn3xpgANYLP5mNkbXYmDxtmLgF68igE
+SHEET_NAME = Sheet1
+YOUR_API_KEY = AIzaSyDRcaDoNQJOyTYAPf-s8oThVXairEo2Lgs
+
+  -->
+</body>
+</html>
