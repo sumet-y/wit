@@ -16,6 +16,9 @@
 	    <header>
 	    	<div class="m-toolbar">
 	    		<div class="m-title">PHONE</div>
+			<div class="m-right">
+                    		<a href="javascript:void(0)" class="easyui-linkbutton" plain="true" outline="true" onclick="reload_p1()" style="width:60px">Reload</a>
+                	</div>
 	    	</div>
 	    </header>
 		<div class="easyui-tabs" data-options="tabHeight:60,fit:true,tabPosition:'bottom',border:false,pill:true,narrow:true,justified:true">
@@ -23,7 +26,8 @@
 				<div class="panel-header tt-inner">
 					<img src='images/calendar.png'/><br>dashboard
 				</div>
-				<iframe src="calendar/index.html"
+				<iframe id="frame_p1" 
+				src="calendar/index.html"
 				frameborder="0" 
 				marginheight="0" 
 				marginwidth="0" 
@@ -83,5 +87,10 @@
 			line-height:150%;
 		}
 	</style>
+	<script> 
+		function reload_p1() { 
+			document.getElementById('frame_p1').src = document.getElementById('frame_p1').src;
+		} 
+	</script> 
 </body>	
 </html>
