@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
       right: 'dayGridMonth,multiMonthYear'
     },
     displayEventTime: false,
+    height: 410, //ปรับความสูง เพื่อใส่ iframe แต่ในคอมจะเพี้ยนลบออกได้
     events: function(fetchInfo, successCallback, failureCallback) {
           fetch('https://sheets.googleapis.com/v4/spreadsheets/1r2QVzmMaeFRZjn3xpgANYLP5mNkbXYmDxtmLgF68igE/values/Event?alt=json&key=AIzaSyDRcaDoNQJOyTYAPf-s8oThVXairEo2Lgs')
             .then(response => response.json())
