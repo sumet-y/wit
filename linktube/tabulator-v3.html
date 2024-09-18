@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://unpkg.com/tabulator-tables@6.2.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.2.5/dist/js/tabulator.min.js"></script>
+</head>
+<body>
+    <div id="example-table"></div>
+    <script>
+        // Fetch data from Google Sheets API using async/await
+        async function fetchData() {
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/1oaN4na8RLzfo0ftzNTKu-aSOeOAhfOSP4iZA9gFPIXA/values/data2?alt=json&key=AIzaSyBmRhz6aorKI7ygPS0tDbHWQzw7aDdUmNc';
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.values; // Assuming the data is in the 'values' array
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Process Google Sheets data and convert it to Tabulator format
+        function processTableData(data) {
+            // Assuming the first row contains headers, and the rest contains table data
+            const processedData = data.slice(1).map(row => ({
+                id: row[0],
+                name: row[1],
+                code_time: row[2],
+                code_link: row[6],
+            }));
+            return processedData;
+        }
+
+        // Initialize Tabulator table with fetched data
+        async function initTable() {
+            const rawData = await fetchData();
+            const tableData = processTableData(rawData);
+
+            var table = new Tabulator("#example-table", {
+                data:tableData, // Loaded data from API
+                height:"336px",
+                layout:"fitColumns",
+                pagination:"local",
+                paginationSize:10,    
+                 /*
+                layout:"fitColumns",      //ปรับคอลัมน์ให้พอดีกับความกว้างของตาราง
+                responsiveLayout:"hide",  //ซ่อนคอลัมน์ที่ไม่พอดีกับตาราง
+                addRowPos:"top",          //เมื่อเพิ่มแถวใหม่ ให้เพิ่มไว้ที่ด้านบนของตาราง
+                history:true,             //อนุญาตให้เลิกทำและทำซ้ำการกระทำบนโต๊ะ
+                pagination:"local",       //แบ่งหน้าข้อมูล
+                paginationSize:7,         //อนุญาตให้มี 7 แถวต่อหน้าข้อมูล
+                paginationCounter:"rows", //แสดงจำนวนแถวที่มีการแบ่งหน้าในส่วนท้าย
+                movableColumns:true,      //อนุญาตให้เปลี่ยนลำดับคอลัมน์
+                initialSort:[             //กำหนดลำดับการจัดเรียงเริ่มต้นของข้อมูล
+                    {column:"name", dir:"asc"},
+                ],
+                columnDefaults:{
+                    tooltip:true,         //แสดงเคล็ดลับเครื่องมือบนเซลล์
+                },
+                */
+                columns:[
+                    {title:"", field:"id",width:10, headerFilter:"input"},  
+                    {title:"", field:"name", headerFilter:"input" ,headerFilterPlaceholder:"Find ..."},
+                    {title:"", field:"code_time",width:60,},
+                    {title: "", field: "code_link",width:30, formatter: function(cell, formatterParams) {
+                        // Make the link clickable
+                        var link = cell.getValue();
+                        return `<a href="${link}" target="_blank">Open</a>`;
+                    }},
+                ],
+            });
+        }
+
+        // Custom max/min header filter
+        var minMaxFilterEditor = function(cell, onRendered, success, cancel, editorParams){
+            var end;
+
+            var container = document.createElement("span");
+
+            var start = document.createElement("input");
+            start.setAttribute("type", "number");
+            start.setAttribute("placeholder", "Min");
+            start.setAttribute("min", 0);
+            start.setAttribute("max", 100);
+            start.style.padding = "4px";
+            start.style.width = "50%";
+            start.style.boxSizing = "border-box";
+
+            start.value = cell.getValue();
+
+            function buildValues(){
+                success({
+                    start:start.value,
+                    end:end.value,
+                });
+            }
+
+            function keypress(e){
+                if(e.keyCode == 13){
+                    buildValues();
+                }
+
+                if(e.keyCode == 27){
+                    cancel();
+                }
+            }
+
+            end = start.cloneNode();
+            end.setAttribute("placeholder", "Max");
+
+            start.addEventListener("change", buildValues);
+            start.addEventListener("blur", buildValues);
+            start.addEventListener("keydown", keypress);
+
+            end.addEventListener("change", buildValues);
+            end.addEventListener("blur", buildValues);
+            end.addEventListener("keydown", keypress);
+
+            container.appendChild(start);
+            container.appendChild(end);
+
+            return container;
+        };
+
+        // Custom min/max filter function
+        function minMaxFilterFunction(headerValue, rowValue, rowData, filterParams){
+            if(rowValue){
+                if(headerValue.start != ""){
+                    if(headerValue.end != ""){
+                        return rowValue >= headerValue.start && rowValue <= headerValue.end;
+                    }else{
+                        return rowValue >= headerValue.start;
+                    }
+                }else{
+                    if(headerValue.end != ""){
+                        return rowValue <= headerValue.end;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        // Initialize the table when the document is ready
+        document.addEventListener('DOMContentLoaded', initTable);
+    </script>
+    
+</body>
+</html>

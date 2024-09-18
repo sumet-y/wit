@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combined Tabulator Tables</title>
+    <link href="https://unpkg.com/tabulator-tables@6.2.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@6.2.5/dist/js/tabulator.min.js"></script>
+</head>
+<body>
+
+    <!-- First table -->
+    <div id="example-table1"></div>
+    
+    <!-- Second table -->
+    <div id="example-table2" style="margin-top: 20px;"></div>
+
+    <script>
+        // First table: Fetch data from Google Sheets API using async/await
+        async function fetchData1() {
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/1oaN4na8RLzfo0ftzNTKu-aSOeOAhfOSP4iZA9gFPIXA/values/data1?alt=json&key=AIzaSyBmRhz6aorKI7ygPS0tDbHWQzw7aDdUmNc';
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.values; // Assuming the data is in the 'values' array
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // First table: Process data and convert it to Tabulator format
+        function processTableData1(data) {
+            const processedData = data.slice(1).map(row => ({
+                id: row[0],
+                name: row[2],
+                v_link: row[3],
+                v_time: row[4] === 'TRUE' ? true : false
+            }));
+            return processedData;
+        }
+
+        // First table: Initialize Tabulator with fetched data
+        async function initTable1() {
+            const rawData = await fetchData1();
+            const tableData = processTableData1(rawData);
+
+            new Tabulator("#example-table1", {
+                data: tableData,
+                height: "346px",
+                layout: "fitColumns",
+                pagination: "local",
+                paginationSize: 10,
+                columns: [
+                    {title:"", field:"id",width:10, headerFilter:"input"},  
+                    {title:"", field:"name", headerFilter:"input" ,headerFilterPlaceholder:"Find ..."},
+                    {title: "", field: "v_link",width:20, formatter: function(cell) {
+                        var link = cell.getValue();
+                        return `<a href="${link}" target="_blank">Open</a>`;
+                    }},
+                    {title:"", field:"v_time",width:10, formatter:"tickCross", headerFilter:"tickCross", headerFilterParams:{"tristate":true}, headerFilterEmptyCheck:function(value){return value === null}},
+                ],
+            });
+        }
+
+        // Second table: Fetch data from Google Sheets API using async/await
+        async function fetchData2() {
+            const url = 'https://sheets.googleapis.com/v4/spreadsheets/1oaN4na8RLzfo0ftzNTKu-aSOeOAhfOSP4iZA9gFPIXA/values/data2?alt=json&key=AIzaSyBmRhz6aorKI7ygPS0tDbHWQzw7aDdUmNc';
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.values; // Assuming the data is in the 'values' array
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Second table: Process data and convert it to Tabulator format
+        function processTableData2(data) {
+            const processedData = data.slice(1).map(row => ({
+                id: row[0],
+                name: row[1],
+                code_time: row[2],
+                code_link: row[6],
+            }));
+            return processedData;
+        }
+
+        // Second table: Initialize Tabulator with fetched data
+        async function initTable2() {
+            const rawData = await fetchData2();
+            const tableData = processTableData2(rawData);
+
+            new Tabulator("#example-table2", {
+                data: tableData,
+                height: "336px",
+                layout: "fitColumns",
+                pagination: "local",
+                paginationSize: 10,
+                columns: [
+                    {title:"", field:"id",width:10, headerFilter:"input"},  
+                    {title:"", field:"name", headerFilter:"input" ,headerFilterPlaceholder:"Find ..."},
+                    {title:"", field:"code_time",width:60},
+                    {title: "", field: "code_link",width:30, formatter: function(cell) {
+                        var link = cell.getValue();
+                        return `<a href="${link}" target="_blank">Open</a>`;
+                    }},
+                ],
+            });
+        }
+
+        // Initialize both tables when the document is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initTable1();
+            initTable2();
+        });
+    </script>
+    
+</body>
+</html>
