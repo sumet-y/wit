@@ -7,5 +7,5 @@ function vibratePattern() {
 }
 
 function vibrateMario() {
-    navigator.vibrate([250, 2000,250, 2000,250, 2000,250, 2000,250, 2000,250, 2000,250, 2000])  
+    navigator.vibrate([200, 3000,200, 3000,200, 3000,200, 3000,200, 3000,200, 3000,200, 3000])  
 }
