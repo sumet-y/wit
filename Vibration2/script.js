@@ -1,11 +1,11 @@
 function vibrate() {
-  navigator.vibrate(1000)  
+  navigator.vibrate(2000)  
 }
 
 function vibratePattern() {
-    navigator.vibrate([300, 400, 300, 400])  
+    navigator.vibrate([2000, 500, 2000, 500,2000, 500, 2000, 500,2000, 500, 2000, 500])  
 }
 
 function vibrateMario() {
-    navigator.vibrate([125, 75, 125, 275, 200, 275, 125, 75, 125, 275, 200, 600, 200, 600])  
+    navigator.vibrate([500, 250, 500, 250, 500, 250, 500, 250, 500, 250, 500, 250, 500, 250, 500, 250])  
 }
