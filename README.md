@@ -4,4 +4,4 @@
 ### https://sumet-y.github.io/wit/moon
 ### https://sumet-y.github.io/wit/add_time
 ### https://sumet-y.github.io/wit/linktube
-### https://sumet-y.github.io/wit/Vibration
+### https://sumet-y.github.io/wit/Vibration2
