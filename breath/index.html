@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -7,31 +8,35 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@200;300;400&display=swap');
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#000; width:100vw; height:100vh; overflow:hidden; font-family:'Sarabun',sans-serif; color: white; }
+  body { background:#000; width:100vw; height:100vh; overflow:hidden; font-family:'Sarabun',sans-serif; color:white; }
   #c { position:fixed; inset:0; width:100%; height:100%; }
 
-  .ctrl-panel {
-    position: fixed; top: 15px; left: 50%; transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
-    padding: 15px 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15);
-    z-index: 1000; display: flex; flex-direction: column; gap: 15px; align-items: center; width: 320px;
-  }
-  .mode-switch { display: flex; gap: 20px; font-size: 14px; }
-  .auto-controls { display: flex; gap: 15px; width: 100%; justify-content: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
-  .counter-box { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-  .counter-box label { font-size: 10px; opacity: 0.7; letter-spacing: 1px; }
-  .counter { display: flex; align-items: center; background: rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; }
-  .btn-c { width: 30px; height: 30px; border: none; background: rgba(255,255,255,0.1); color: white; cursor: pointer; font-size: 18px; }
-  .btn-c:hover { background: rgba(255,255,255,0.2); }
-  .val-c { width: 30px; text-align: center; font-size: 16px; font-weight: bold; }
+.ctrl-panel {
+position:fixed; top:15px; left:50%; transform:translateX(-50%);
+background:rgba(0,0,0,0.7); backdrop-filter:blur(12px);
+padding:15px 20px; border-radius:20px; border:1px solid rgba(255,255,255,0.15);
+z-index:1000; display:flex; flex-direction:column; gap:15px; align-items:center; width:320px;
+}
+.mode-switch { display:flex; gap:20px; font-size:14px; }
+.auto-controls {
+display:flex; gap:15px; width:100%; justify-content:center;
+border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;
+}
+.counter-box { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.counter-box label { font-size:10px; opacity:0.7; letter-spacing:1px; }
+.counter { display:flex; align-items:center; background:rgba(255,255,255,0.1); border-radius:8px; overflow:hidden; }
+.btn-c { width:30px; height:30px; border:none; background:rgba(255,255,255,0.1); color:white; cursor:pointer; font-size:18px; }
+.btn-c:hover { background:rgba(255,255,255,0.2); }
+.val-c { width:30px; text-align:center; font-size:16px; font-weight:bold; }
 
-  .sw { position:fixed; bottom:60px; display:flex; flex-direction:column; align-items:center; gap:10px; z-index:100; transition: opacity 0.3s; }
-  .sw.right { right:30px; } .sw.left  { left:30px; }
-  .sl { font-size:10px; font-weight:200; letter-spacing:.2em; color:rgba(255,255,255,0.7); pointer-events:none; }
-  .st { position:relative; width:44px; height:200px; background:rgba(255,255,255,0.05); border-radius:22px; border:1px solid rgba(255,255,255,0.2); cursor:pointer; touch-action:none; }
-  .sf { position:absolute; bottom:6px; left:6px; right:6px; border-radius:10px; pointer-events:none; height:0; background: linear-gradient(to top, #55aadd, #55dd88); opacity: 0.2; }
-  .sh { position:absolute; width:34px; height:34px; border-radius:50%; left:5px; bottom:5px; pointer-events:none; background:radial-gradient(circle at 35% 35%, #ffffff, #55aadd); box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+.sw { position:fixed; bottom:60px; display:flex; flex-direction:column; align-items:center; gap:10px; z-index:100; transition:opacity 0.3s; }
+.sw.right { right:30px; } .sw.left { left:30px; }
+.sl { font-size:10px; font-weight:200; letter-spacing:.2em; color:rgba(255,255,255,0.7); pointer-events:none; }
+.st { position:relative; width:44px; height:200px; background:rgba(255,255,255,0.05); border-radius:22px; border:1px solid rgba(255,255,255,0.2); cursor:pointer; touch-action:none; }
+.sf { position:absolute; bottom:6px; left:6px; right:6px; border-radius:10px; pointer-events:none; height:0; background:linear-gradient(to top,#55aadd,#55dd88); opacity:0.2; }
+.sh { position:absolute; width:34px; height:34px; border-radius:50%; left:5px; bottom:5px; pointer-events:none; background:radial-gradient(circle at 35% 35%,#ffffff,#55aadd); box-shadow:0 4px 10px rgba(0,0,0,0.5); }
 </style>
+
 </head>
 <body>
 
@@ -44,17 +49,17 @@
     <div class="counter-box">
       <label>ช้า-เร็ว</label>
       <div class="counter">
-        <button class="btn-c" onclick="adj('speed', -1)">-</button>
+        <button class="btn-c" onclick="adj('speed',-1)">-</button>
         <div class="val-c" id="v-speed">2</div>
-        <button class="btn-c" onclick="adj('speed', 1)">+</button>
+        <button class="btn-c" onclick="adj('speed',1)">+</button>
       </div>
     </div>
     <div class="counter-box">
       <label>สั้น-ยาว</label>
       <div class="counter">
-        <button class="btn-c" onclick="adj('len', -1)">-</button>
+        <button class="btn-c" onclick="adj('len',-1)">-</button>
         <div class="val-c" id="v-len">2</div>
-        <button class="btn-c" onclick="adj('len', 1)">+</button>
+        <button class="btn-c" onclick="adj('len',1)">+</button>
       </div>
     </div>
   </div>
@@ -62,163 +67,297 @@
 
 <canvas id="c"></canvas>
 
-<div class="sw left" id="uiL"><div class="sl">เข้า</div><div class="st" id="stL"><div class="sf" id="sfL"></div><div class="sh" id="shL"></div></div><div class="sl">ออก</div></div>
+<div class="sw left"  id="uiL"><div class="sl">เข้า</div><div class="st" id="stL"><div class="sf" id="sfL"></div><div class="sh" id="shL"></div></div><div class="sl">ออก</div></div>
 <div class="sw right" id="uiR"><div class="sl">เข้า</div><div class="st" id="stR"><div class="sf" id="sfR"></div><div class="sh" id="shR"></div></div><div class="sl">ออก</div></div>
 
 <script>
-const canvas = document.getElementById('c');
-const ctx = canvas.getContext('2d');
-let W, H, val = 0;
-let lastPos = 0;
-let isDragging = false;
+/* ===== SETUP ===== */
+const canvas  = document.getElementById('c');
+const ctx     = canvas.getContext('2d');
+let W, H;
 
-const bgImg = new Image();
-bgImg.src = 'https://sumet-y.github.io/wit/breath/abc3.png';
+const bgImg   = new Image();
+bgImg.src     = 'https://sumet-y.github.io/wit/breath/abc3.png';
 let imgLoaded = false;
-bgImg.onload = () => imgLoaded = true;
+bgImg.onload  = () => { imgLoaded = true; };
 
-let config = { mode: 'manual', speed: 2, len: 2 };
+let config    = { mode:'manual', speed:2, len:2 };
 let autoPhase = 0;
 
+/* ===== SLIDER ===== */
+const SL_H = 200, THUMB = 34, RANGE = SL_H - THUMB - 10;
+const slEls = [
+  { t:document.getElementById('shL'), f:document.getElementById('sfL'), el:document.getElementById('stL') },
+  { t:document.getElementById('shR'), f:document.getElementById('sfR'), el:document.getElementById('stR') }
+];
+let sliderPos     = 0.0;
+let lastSliderPos = 0.0;
+let sliderVel     = 0.0;
+let isDragging    = false;
+let streamAccum   = 0;
+
+/* ===== DOT / HALO STATE ===== */
+const DOT_R   = 4;      // รัศมีจุดคงที่ (px)
+let dotGlow   = 0;      // 0=แดง  1=ขาว
+let haloR     = 0;      // รัศมี halo ที่ smooth แล้ว
+let haloPulse = 0;      // phase shimmer
+
+/* ===== CONTROLS ===== */
 function adj(key, delta) {
   config[key] = Math.max(1, Math.min(4, config[key] + delta));
-  document.getElementById(`v-${key}`).innerText = config[key];
+  document.getElementById('v-' + key).innerText = config[key];
 }
-
 document.querySelectorAll('input[name="m"]').forEach(r => {
-  r.onchange = (e) => {
+  r.onchange = e => {
     config.mode = e.target.value;
-    document.getElementById('autoSet').style.display = (config.mode === 'auto') ? 'flex' : 'none';
+    document.getElementById('autoSet').style.display = config.mode === 'auto' ? 'flex' : 'none';
     const op = config.mode === 'auto' ? '0.3' : '1';
     document.getElementById('uiL').style.opacity = op;
     document.getElementById('uiR').style.opacity = op;
-    autoPhase = 0;
+    autoPhase = 0; sliderVel = 0; streamAccum = 0;
   };
 });
 
-function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 window.onresize = resize; resize();
 
-const SL_H = 200, THUMB = 34, RANGE = SL_H - THUMB - 10;
-const sliders = [
-  {t:document.getElementById('shL'), f:document.getElementById('sfL'), el:document.getElementById('stL')},
-  {t:document.getElementById('shR'), f:document.getElementById('sfR'), el:document.getElementById('stR')}
-];
-
-// ฟังก์ชันอัปเดต UI สไลเดอร์ทั้งสองพร้อมกัน
 function updateSliderUI(pos) {
-  const bottomVal = (pos * RANGE + 5) + 'px';
-  const fillHeight = (pos * RANGE + 10) + 'px';
-  sliders.forEach(s => {
-    s.t.style.bottom = bottomVal;
-    s.f.style.height = fillHeight;
+  const p = Math.max(0, Math.min(1, pos));
+  slEls.forEach(s => {
+    s.t.style.bottom = (p * RANGE + 5)  + 'px';
+    s.f.style.height = (p * RANGE + 10) + 'px';
+  });
+}
+function getPosFromEvent(e) {
+  const rect = slEls[0].el.getBoundingClientRect();
+  const cy   = e.touches ? e.touches[0].clientY : e.clientY;
+  return Math.max(0, Math.min(1, 1 - (cy - rect.top - THUMB / 2) / RANGE));
+}
+window.onmousedown = window.ontouchstart = e => {
+  if (e.target.closest('.st') && config.mode === 'manual') {
+    isDragging = true;
+    sliderPos = lastSliderPos = getPosFromEvent(e);
+    updateSliderUI(sliderPos);
+  }
+};
+window.onmousemove = window.ontouchmove = e => {
+  if (isDragging && config.mode === 'manual') {
+    sliderPos = getPosFromEvent(e);
+    updateSliderUI(sliderPos);
+  }
+};
+window.onmouseup = window.ontouchend = () => { isDragging = false; };
+
+/* ===== METRICS ===== */
+function getMetrics() {
+  const r  = Math.max(W / bgImg.width, H / bgImg.height);
+  const nw = bgImg.width * r, nh = bgImg.height * r;
+  return {
+    nx:(W-nw)/2, ny:(H-nh)/2, nw, nh,
+    fx:(W-nw)/2 + nw*0.52,
+    fy:(H-nh)/2 + nh*0.45
+  };
+}
+
+/* ===== STREAMS (bezier) ===== */
+const streams = [];
+
+function addStream(direction, strength, fx, fy) {
+  const s    = Math.min(1, strength);
+  const ang  = 70 * Math.PI / 180;
+  const dist = 160 + 260 * s;
+
+  const far  = { x: fx + Math.cos(ang)*dist, y: fy + Math.sin(ang)*dist };
+  const near = { x: fx + 6,                  y: fy + 3 };
+
+  const perp = { x: Math.sin(ang), y: -Math.cos(ang) };
+  const sp   = (Math.random() - 0.5) * 30;
+  const p0   = direction > 0
+    ? { x: far.x  + perp.x*sp,        y: far.y  + perp.y*sp }
+    : { x: near.x + perp.x*sp*0.15,   y: near.y + perp.y*sp*0.15 };
+  const p3   = direction > 0
+    ? { x: near.x + perp.x*sp*0.15,   y: near.y + perp.y*sp*0.15 }
+    : { x: far.x  + perp.x*sp,        y: far.y  + perp.y*sp };
+
+  const cm   = dist * 0.35;
+  const po   = (Math.random() - 0.5) * cm;
+  const cp1  = { x: p0.x+(p3.x-p0.x)*0.33+perp.x*po,   y: p0.y+(p3.y-p0.y)*0.33+perp.y*po };
+  const cp2  = { x: p0.x+(p3.x-p0.x)*0.66+perp.x*po*.5, y: p0.y+(p3.y-p0.y)*0.66+perp.y*po*.5 };
+
+  streams.push({
+    p0, cp1, cp2, p3,
+    l:0, ml: Math.round(50 + s*60),
+    maxW: 6 + s*20,
+    c: direction > 0 ? '110,195,255' : '130,250,180'
   });
 }
 
-function handleInput(e) {
-  if (config.mode === 'auto') return;
-  const rect = sliders[0].el.getBoundingClientRect(); // อิงจากตำแหน่งตัวใดตัวหนึ่ง
-  const cy = (e.touches ? e.touches[0].clientY : e.clientY);
-  let pos = 1 - ((cy - rect.top - THUMB/2) / RANGE);
-  pos = Math.max(0, Math.min(1, pos));
-
-  let diff = pos - lastPos;
-  val = -diff * 12; // ลากขึ้นเป็นลบ (เข้า), ลากลงเป็นบวก (ออก)
-  val = Math.max(-1, Math.min(1, val));
-  
-  lastPos = pos;
-  updateSliderUI(pos);
+function bezierPt(s, tt) {
+  const u = 1 - tt;
+  return {
+    x: u*u*u*s.p0.x + 3*u*u*tt*s.cp1.x + 3*u*tt*tt*s.cp2.x + tt*tt*tt*s.p3.x,
+    y: u*u*u*s.p0.y + 3*u*u*tt*s.cp1.y + 3*u*tt*tt*s.cp2.y + tt*tt*tt*s.p3.y
+  };
 }
 
-window.onmousedown = window.ontouchstart = (e) => {
-  if (e.target.closest('.st')) {
-    isDragging = true;
-    const rect = e.target.closest('.st').getBoundingClientRect();
-    const cy = (e.touches ? e.touches[0].clientY : e.clientY);
-    lastPos = 1 - ((cy - rect.top - THUMB/2) / RANGE);
+function drawStream(s) {
+  const t     = s.l / s.ml;
+  const alpha = Math.sin(t * Math.PI);
+  if (alpha < 0.005) return;
+
+  const STEPS = 20;
+  const drawPath = (lineW, a) => {
+    ctx.beginPath();
+    ctx.lineWidth   = lineW;
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+    ctx.strokeStyle = `rgba(${s.c},${a.toFixed(3)})`;
+    const pt0 = bezierPt(s, 0);
+    ctx.moveTo(pt0.x, pt0.y);
+    for (let i = 1; i <= STEPS; i++) ctx.lineTo(...Object.values(bezierPt(s, (i/STEPS)*t)));
+    ctx.stroke();
+  };
+
+  drawPath(s.maxW * 1.8, alpha * 0.12);   // outer soft
+  drawPath(s.maxW,       alpha * 0.42);   // core
+  drawPath(s.maxW * 0.2, alpha * 0.85);   // highlight
+}
+
+/* ===================================================================
+   DOT + HALO
+   แก้หลัก: ใช้ binary on/off สำหรับ "กำลังเลื่อน" แทนการ scale ตาม
+   velocity → ทำให้ glow เต็มที่แม้เลื่อนช้า
+=================================================================== */
+function updateDot(isMoving, dt) {
+  // dotGlow: ถ้ากำลังเลื่อน → ขึ้นไปหา 1 เต็มๆ เสมอ (ไม่ scale ตาม speed)
+  const glowTarget = isMoving ? 1.0 : 0.0;
+  const rate = glowTarget > dotGlow ? 10 : 1.8;   // ขึ้นเร็ว ลงช้ามาก
+  dotGlow += (glowTarget - dotGlow) * rate * dt;
+  dotGlow  = Math.max(0, Math.min(1, dotGlow));
+
+  // halo radius: ตาม dotGlow + shimmer เบาๆ
+  haloPulse += dt * 2.0;
+  const shimmer   = Math.sin(haloPulse) * 0.05 + 0.95;
+  const haloTarget = dotGlow * 110 * shimmer;
+  haloR += (haloTarget - haloR) * Math.min(1, 7 * dt);
+}
+
+function drawDot(fx, fy) {
+  // --- halo layers ---
+  if (haloR > 1 && dotGlow > 0.01) {
+    const layers = [
+      { r: haloR * 3.2, a: dotGlow * 0.07  },
+      { r: haloR * 2.1, a: dotGlow * 0.14  },
+      { r: haloR * 1.4, a: dotGlow * 0.28  },
+      { r: haloR * 0.8, a: dotGlow * 0.50  },
+    ];
+    for (const h of layers) {
+      if (h.r < 1) continue;
+      const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, h.r);
+      g.addColorStop(0,    `rgba(255,250,235,${h.a.toFixed(3)})`);
+      g.addColorStop(0.45, `rgba(230,242,255,${(h.a*0.38).toFixed(3)})`);
+      g.addColorStop(1,    'rgba(200,225,255,0)');
+      ctx.beginPath();
+      ctx.arc(fx, fy, h.r, 0, Math.PI*2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    }
   }
-};
 
-window.onmousemove = window.ontouchmove = (e) => { if(isDragging) handleInput(e); };
-window.onmouseup = window.ontouchend = () => { isDragging = false; val = 0; };
+  // --- dot color: แดง → ขาว ตาม dotGlow ---
+  const rv = Math.round(200 + 55  * dotGlow);
+  const gv = Math.round(30  + 225 * dotGlow);
+  const bv = Math.round(30  + 225 * dotGlow);
 
-function getMetrics() {
-  let r = Math.max(W/bgImg.width, H/bgImg.height);
-  let nw = bgImg.width*r, nh = bgImg.height*r;
-  return { nx: (W-nw)/2, ny: (H-nh)/2, nw, nh, fx: (W-nw)/2 + (nw*0.52), fy: (H-nh)/2 + (nh*0.45) };
+  // soft ring รอบ dot
+  const ringR = DOT_R + 2 + dotGlow * 5;
+  const ring  = ctx.createRadialGradient(fx, fy, 0, fx, fy, ringR);
+  ring.addColorStop(0,   `rgba(${rv},${gv},${bv},0.9)`);
+  ring.addColorStop(0.5, `rgba(${rv},${gv},${bv},0.35)`);
+  ring.addColorStop(1,   `rgba(${rv},${gv},${bv},0)`);
+  ctx.beginPath();
+  ctx.arc(fx, fy, ringR, 0, Math.PI*2);
+  ctx.fillStyle = ring;
+  ctx.fill();
+
+  // dot หลัก
+  ctx.beginPath();
+  ctx.arc(fx, fy, DOT_R, 0, Math.PI*2);
+  ctx.fillStyle = `rgb(${rv},${gv},${bv})`;
+  ctx.fill();
+
+  // specular
+  if (dotGlow > 0.05) {
+    ctx.beginPath();
+    ctx.arc(fx - DOT_R*0.3, fy - DOT_R*0.3, DOT_R*0.35, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(255,255,255,${(dotGlow*0.88).toFixed(2)})`;
+    ctx.fill();
+  }
 }
 
-const streams = [];
-function addStream(v, fx, fy) {
-  const isI = v < 0;
-  const s = Math.abs(v);
-  const xOffset = -15, yOffset = 20, ang = (70 * Math.PI) / 180;
-  const d = 400 * s;
-  const out = { x: fx + Math.cos(ang)*d, y: fy + Math.sin(ang)*d };
-  const ins = { x: fx - 25 - xOffset, y: fy - 15 - yOffset };
-  streams.push({ st: isI?out:ins, en: isI?ins:out, l: 0, ml: 20+(s*40), c: isI?'120,210,255':'150,255,190', w: 1+s*12 });
-}
-
-let glowEnergy = 0, glowRadius = 0, glowOpacity = 0;
-function updateGlow(dt) {
-  const abs = Math.abs(val);
-  glowEnergy = (abs > 0.05) ? Math.min(1, glowEnergy + abs*4*dt) : Math.max(0, glowEnergy - 3*dt);
-  glowRadius += ((8 + glowEnergy*60) - glowRadius) * 8 * dt;
-  glowOpacity += ((glowEnergy*0.6) - glowOpacity) * 8 * dt;
-}
-
+/* ===== MAIN LOOP ===== */
 let lastT = 0;
 function anim(ts) {
   const dt = Math.min((ts - lastT) / 1000, 0.05);
   lastT = ts;
-  ctx.clearRect(0,0,W,H);
-  if (!imgLoaded) return requestAnimationFrame(anim);
+
+  ctx.clearRect(0, 0, W, H);
+  if (!imgLoaded) { requestAnimationFrame(anim); return; }
+
   const m = getMetrics();
 
+  /* velocity */
+  let currentVel = 0;
   if (config.mode === 'auto') {
-    // ปรับความสัมพันธ์โหมด Auto
-    const speedTable = [0.015, 0.03, 0.05, 0.08]; // ช้า-เร็ว
-    const lenTable = [0.3, 0.5, 0.7, 1.0];        // สั้น-ยาว
-    
-    autoPhase += speedTable[config.speed-1];
-    const wave = Math.sin(autoPhase);
-    const amplitude = lenTable[config.len-1];
-    
-    val = wave * amplitude * 0.8; // แรงลมตามความยาวที่ตั้งไว้
-    
-    // อัปเดต UI สไลเดอร์ตามคลื่น Sine
-    const autoPos = (wave + 1) / 2 * amplitude; 
-    updateSliderUI(autoPos);
+    const speedTbl = [0.010, 0.022, 0.040, 0.068];
+    const lenTbl   = [0.3, 0.5, 0.7, 1.0];
+    const prev     = autoPhase;
+    autoPhase     += speedTbl[config.speed - 1];
+    const amp      = lenTbl[config.len - 1];
+    currentVel     = (Math.sin(autoPhase) - Math.sin(prev)) * amp;
+    sliderPos      = (Math.sin(autoPhase) * amp + 1) / 2;
+    updateSliderUI(sliderPos);
+  } else {
+    currentVel = sliderPos - lastSliderPos;
+  }
+  lastSliderPos = sliderPos;
+
+  sliderVel = sliderVel * 0.72 + currentVel * 0.28;
+
+  const absVel   = Math.abs(sliderVel);
+  const dir      = sliderVel >= 0 ? 1 : -1;
+  // "กำลังเลื่อน" = threshold ต่ำมาก ไม่ว่าจะช้าแค่ไหน
+  const isMoving = absVel > 0.0003;
+
+  /* spawn streams */
+  if (isMoving) {
+    const rate  = 8 + absVel * 160;
+    streamAccum += rate * dt;
+    while (streamAccum >= 1) {
+      addStream(dir, Math.min(1, absVel * 12), m.fx, m.fy);
+      streamAccum -= 1;
+    }
+  } else {
+    streamAccum = 0;
   }
 
+  /* draw */
   ctx.drawImage(bgImg, m.nx, m.ny, m.nw, m.nh);
-  if (Math.abs(val) > 0.06 && Math.random() < 0.7) addStream(val, m.fx, m.fy);
 
   for (let i = streams.length - 1; i >= 0; i--) {
-    let s = streams[i]; s.l++;
-    let t = s.l/s.ml, o = Math.sin(t*Math.PI);
-    ctx.beginPath(); ctx.lineWidth = s.w; ctx.lineCap = 'round';
-    ctx.strokeStyle = `rgba(${s.c}, ${o*0.5})`;
-    ctx.moveTo(s.st.x+(s.en.x-s.st.x)*t*0.8, s.st.y+(s.en.y-s.st.y)*t*0.8);
-    ctx.lineTo(s.st.x+(s.en.x-s.st.x)*t, s.st.y+(s.en.y-s.st.y)*t);
-    ctx.stroke();
-    if (s.l >= s.ml) streams.splice(i, 1);
+    drawStream(streams[i]);
+    streams[i].l++;
+    if (streams[i].l >= streams[i].ml) streams.splice(i, 1);
   }
 
-  updateGlow(dt);
-  if (glowOpacity > 0.01) {
-    const g = ctx.createRadialGradient(m.fx, m.fy, 0, m.fx, m.fy, glowRadius);
-    g.addColorStop(0, `rgba(255, 30, 0, ${glowOpacity})`);
-    g.addColorStop(1, `rgba(255, 0, 0, 0)`);
-    ctx.beginPath(); ctx.arc(m.fx, m.fy, glowRadius, 0, Math.PI*2);
-    ctx.fillStyle = g; ctx.fill();
-  }
-  ctx.beginPath(); ctx.arc(m.fx, m.fy, 3, 0, Math.PI*2);
-  ctx.fillStyle = '#b30000'; ctx.fill();
+  updateDot(isMoving, dt);
+  drawDot(m.fx, m.fy);
 
   requestAnimationFrame(anim);
 }
+
 requestAnimationFrame(t => { lastT = t; anim(t); });
 </script>
+
 </body>
 </html>
