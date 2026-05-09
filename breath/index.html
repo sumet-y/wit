@@ -4,65 +4,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Deep Breath - Sync Flow</title>
+<title>Deep Breath</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@200;300;400&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#000; width:100vw; height:100vh; overflow:hidden; font-family:'Sarabun',sans-serif; color:white; }
-  #c { position:fixed; inset:0; width:100%; height:100%; }
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@200;300;400;600&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:#000;width:100vw;height:100vh;overflow:hidden;font-family:'Sarabun',sans-serif;color:#fff;}
+  #c{position:fixed;inset:0;width:100%;height:100%;}
 
-.ctrl-panel {
-position:fixed; top:15px; left:50%; transform:translateX(-50%);
-background:rgba(0,0,0,0.7); backdrop-filter:blur(12px);
-padding:15px 20px; border-radius:20px; border:1px solid rgba(255,255,255,0.15);
-z-index:1000; display:flex; flex-direction:column; gap:15px; align-items:center; width:320px;
+/* ── panel ── */
+.ctrl-panel{
+position:fixed;top:15px;left:50%;transform:translateX(-50%);
+background:rgba(0,0,0,0.80);backdrop-filter:blur(16px);
+border-radius:20px;border:1px solid rgba(255,255,255,0.15);
+z-index:1000;width:340px;overflow:hidden;
 }
-.mode-switch { display:flex; gap:20px; font-size:14px; }
-.auto-controls {
-display:flex; gap:15px; width:100%; justify-content:center;
-border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;
+/* header row: mode + collapse btn */
+.panel-head{
+display:flex;align-items:center;justify-content:space-between;
+padding:14px 18px 12px;
 }
-.counter-box { display:flex; flex-direction:column; align-items:center; gap:5px; }
-.counter-box label { font-size:10px; opacity:0.7; letter-spacing:1px; }
-.counter { display:flex; align-items:center; background:rgba(255,255,255,0.1); border-radius:8px; overflow:hidden; }
-.btn-c { width:30px; height:30px; border:none; background:rgba(255,255,255,0.1); color:white; cursor:pointer; font-size:18px; }
-.btn-c:hover { background:rgba(255,255,255,0.2); }
-.val-c { width:30px; text-align:center; font-size:16px; font-weight:bold; }
+.mode-switch{display:flex;gap:20px;font-size:14px;}
+.btn-collapse{
+background:rgba(255,255,255,0.1);border:none;color:#fff;
+width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:16px;
+display:flex;align-items:center;justify-content:center;transition:background .15s;
+}
+.btn-collapse:hover{background:rgba(255,255,255,0.22);}
 
-.sw { position:fixed; bottom:60px; display:flex; flex-direction:column; align-items:center; gap:10px; z-index:100; transition:opacity 0.3s; }
-.sw.right { right:30px; } .sw.left { left:30px; }
-.sl { font-size:10px; font-weight:200; letter-spacing:.2em; color:rgba(255,255,255,0.7); pointer-events:none; }
-.st { position:relative; width:44px; height:200px; background:rgba(255,255,255,0.05); border-radius:22px; border:1px solid rgba(255,255,255,0.2); cursor:pointer; touch-action:none; }
-.sf { position:absolute; bottom:6px; left:6px; right:6px; border-radius:10px; pointer-events:none; height:0; background:linear-gradient(to top,#55aadd,#55dd88); opacity:0.2; }
-.sh { position:absolute; width:34px; height:34px; border-radius:50%; left:5px; bottom:5px; pointer-events:none; background:radial-gradient(circle at 35% 35%,#ffffff,#55aadd); box-shadow:0 4px 10px rgba(0,0,0,0.5); }
+/* panel body (collapsible) */
+.panel-body{
+padding:0 18px 14px;
+display:flex;flex-direction:column;gap:12px;
+transition:max-height .3s ease, opacity .3s ease, padding .3s ease;
+max-height:500px;opacity:1;
+}
+.panel-body.collapsed{max-height:0;opacity:0;padding-top:0;padding-bottom:0;overflow:hidden;}
+
+/* intensity */
+.intensity-row{display:flex;align-items:center;gap:10px;width:100%;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;}
+.intensity-label{font-size:10px;opacity:0.65;letter-spacing:.06em;white-space:nowrap;min-width:70px;}
+.intensity-track{
+flex:1;height:6px;border-radius:3px;position:relative;cursor:pointer;touch-action:none;
+background:linear-gradient(to right,rgba(100,200,255,0.35)0%,rgba(100,200,255,0.65)40%,rgba(255,180,80,0.75)70%,rgba(255,80,80,0.95)100%);
+}
+.intensity-thumb{
+position:absolute;top:50%;width:14px;height:14px;border-radius:50%;
+background:#fff;transform:translate(-50%,-50%);box-shadow:0 2px 6px rgba(0,0,0,0.6);
+pointer-events:none;left:22.2%;
+}
+.intensity-val{font-size:13px;font-weight:600;min-width:18px;text-align:right;}
+
+/* auto controls */
+.auto-body{display:flex;flex-direction:column;gap:10px;border-top:1px solid rgba(255,255,255,0.1);padding-top:12px;}
+.phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.phase-box{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.phase-label{font-size:10px;opacity:0.65;letter-spacing:.05em;text-align:center;}
+.phase-ctrl{display:flex;align-items:center;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;}
+.btn-p{width:28px;height:28px;border:none;background:transparent;color:#fff;cursor:pointer;font-size:17px;line-height:1;transition:background .15s;}
+.btn-p:hover{background:rgba(255,255,255,0.18);}
+.btn-p:disabled{opacity:0.25;cursor:default;}
+.inp-p{
+width:44px;height:28px;border:none;background:transparent;
+color:#fff;font-size:14px;font-family:'Sarabun',sans-serif;text-align:center;outline:none;
+}
+.inp-p:disabled{opacity:0.4;}
+.inp-p::-webkit-inner-spin-button,.inp-p::-webkit-outer-spin-button{-webkit-appearance:none;}
+.inp-p[type=number]{-moz-appearance:textfield;}
+.phase-bar-wrap{width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;}
+.phase-bar{height:100%;border-radius:2px;width:0%;}
+
+/* run/stop row */
+.run-row{display:flex;gap:10px;align-items:center;}
+.btn-run{
+flex:1;height:32px;border:none;border-radius:10px;cursor:pointer;font-size:13px;font-family:'Sarabun',sans-serif;
+font-weight:600;letter-spacing:.05em;transition:opacity .15s;
+}
+.btn-run.run {background:rgba(110,200,110,0.85);color:#000;}
+.btn-run.stop{background:rgba(220,80,80,0.85); color:#fff;}
+.btn-run:hover{opacity:.85;}
+.phase-indicator{font-size:11px;opacity:0.7;letter-spacing:.1em;min-height:14px;text-align:center;}
+
+/* sliders */
+.sw{
+position:fixed;bottom:155px;
+display:flex;flex-direction:column;align-items:center;gap:10px;
+z-index:100;transition:opacity 0.3s;
+}
+.sw.right{right:30px;}.sw.left{left:30px;}
+.sl{font-size:10px;font-weight:200;letter-spacing:.2em;color:rgba(255,255,255,0.7);pointer-events:none;}
+.st{position:relative;width:44px;height:200px;background:rgba(255,255,255,0.05);border-radius:22px;border:1px solid rgba(255,255,255,0.2);cursor:pointer;touch-action:none;}
+.sf{position:absolute;bottom:6px;left:6px;right:6px;border-radius:10px;pointer-events:none;height:0;background:linear-gradient(to top,#55aadd,#55dd88);opacity:0.2;}
+.sh{position:absolute;width:34px;height:34px;border-radius:50%;left:5px;bottom:5px;pointer-events:none;background:radial-gradient(circle at 35% 35%,#fff,#55aadd);box-shadow:0 4px 10px rgba(0,0,0,0.5);}
 </style>
 
 </head>
 <body>
 
-<div class="ctrl-panel">
-  <div class="mode-switch">
-    <label><input type="radio" name="m" value="manual" checked> ควบคุมเอง</label>
-    <label><input type="radio" name="m" value="auto"> อัตโนมัติ</label>
-  </div>
-  <div class="auto-controls" id="autoSet" style="display:none;">
-    <div class="counter-box">
-      <label>ช้า-เร็ว</label>
-      <div class="counter">
-        <button class="btn-c" onclick="adj('speed',-1)">-</button>
-        <div class="val-c" id="v-speed">2</div>
-        <button class="btn-c" onclick="adj('speed',1)">+</button>
-      </div>
+<div class="ctrl-panel" id="ctrlPanel">
+  <!-- header -->
+  <div class="panel-head">
+    <div class="mode-switch">
+      <label><input type="radio" name="m" value="manual" checked> ควบคุมเอง</label>
+      <label><input type="radio" name="m" value="auto"> อัตโนมัติ</label>
     </div>
-    <div class="counter-box">
-      <label>สั้น-ยาว</label>
-      <div class="counter">
-        <button class="btn-c" onclick="adj('len',-1)">-</button>
-        <div class="val-c" id="v-len">2</div>
-        <button class="btn-c" onclick="adj('len',1)">+</button>
-      </div>
-    </div>
+    <button class="btn-collapse" id="btnCollapse" onclick="togglePanel()">−</button>
   </div>
+
+  <!-- body -->
+
+  <div class="panel-body" id="panelBody">
+
+<!-- intensity -->
+<div class="intensity-row">
+  <div class="intensity-label">ความแรงลม</div>
+  <div class="intensity-track" id="intensityTrack">
+    <div class="intensity-thumb" id="intensityThumb"></div>
+  </div>
+  <div class="intensity-val" id="intensityVal">3</div>
+</div>
+
+<!-- auto settings -->
+<div class="auto-body" id="autoSet" style="display:none;">
+  <div class="phase-grid">
+
+    <div class="phase-box">
+      <div class="phase-label">หายใจเข้า</div>
+      <div class="phase-ctrl">
+        <button class="btn-p" id="btn-inhale-m" onclick="adjPhase('inhale',-0.5)">−</button>
+        <input class="inp-p" id="inp-inhale" type="number" value="4" min="0.01" max="8" step="0.5" oninput="clampPhase('inhale')">
+        <button class="btn-p" id="btn-inhale-p" onclick="adjPhase('inhale',0.5)">+</button>
+      </div>
+      <div class="phase-bar-wrap"><div class="phase-bar" id="bar-inhale" style="background:#6ec8ff"></div></div>
+    </div>
+
+    <div class="phase-box">
+      <div class="phase-label">หยุด (กลั้น)</div>
+      <div class="phase-ctrl">
+        <button class="btn-p" id="btn-hold-m" onclick="adjPhase('hold',-0.5)">−</button>
+        <input class="inp-p" id="inp-hold" type="number" value="0" min="0" max="8" step="0.5" oninput="clampPhase('hold')">
+        <button class="btn-p" id="btn-hold-p" onclick="adjPhase('hold',0.5)">+</button>
+      </div>
+      <div class="phase-bar-wrap"><div class="phase-bar" id="bar-hold" style="background:#ffe066"></div></div>
+    </div>
+
+    <div class="phase-box">
+      <div class="phase-label">หายใจออก</div>
+      <div class="phase-ctrl">
+        <button class="btn-p" id="btn-exhale-m" onclick="adjPhase('exhale',-0.5)">−</button>
+        <input class="inp-p" id="inp-exhale" type="number" value="4" min="0.01" max="8" step="0.5" oninput="clampPhase('exhale')">
+        <button class="btn-p" id="btn-exhale-p" onclick="adjPhase('exhale',0.5)">+</button>
+      </div>
+      <div class="phase-bar-wrap"><div class="phase-bar" id="bar-exhale" style="background:#82ffb8"></div></div>
+    </div>
+
+    <div class="phase-box">
+      <div class="phase-label">หยุด (พัก)</div>
+      <div class="phase-ctrl">
+        <button class="btn-p" id="btn-rest-m" onclick="adjPhase('rest',-0.5)">−</button>
+        <input class="inp-p" id="inp-rest" type="number" value="0" min="0" max="8" step="0.5" oninput="clampPhase('rest')">
+        <button class="btn-p" id="btn-rest-p" onclick="adjPhase('rest',0.5)">+</button>
+      </div>
+      <div class="phase-bar-wrap"><div class="phase-bar" id="bar-rest" style="background:#d0aaff"></div></div>
+    </div>
+
+  </div><!-- /phase-grid -->
+
+  <div class="run-row">
+    <button class="btn-run stop" id="btnRun" onclick="toggleRun()">▶ เริ่ม</button>
+  </div>
+  <div class="phase-indicator" id="phaseLabel"></div>
+</div><!-- /auto-body -->
+
+  </div><!-- /panel-body -->
 </div>
 
 <canvas id="c"></canvas>
@@ -71,292 +184,413 @@ border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;
 <div class="sw right" id="uiR"><div class="sl">เข้า</div><div class="st" id="stR"><div class="sf" id="sfR"></div><div class="sh" id="shR"></div></div><div class="sl">ออก</div></div>
 
 <script>
-/* ===== SETUP ===== */
-const canvas  = document.getElementById('c');
-const ctx     = canvas.getContext('2d');
-let W, H;
-
-const bgImg   = new Image();
-bgImg.src     = 'https://sumet-y.github.io/wit/breath/abc3.png';
-let imgLoaded = false;
-bgImg.onload  = () => { imgLoaded = true; };
-
-let config    = { mode:'manual', speed:2, len:2 };
-let autoPhase = 0;
-
-/* ===== SLIDER ===== */
-const SL_H = 200, THUMB = 34, RANGE = SL_H - THUMB - 10;
-const slEls = [
-  { t:document.getElementById('shL'), f:document.getElementById('sfL'), el:document.getElementById('stL') },
-  { t:document.getElementById('shR'), f:document.getElementById('sfR'), el:document.getElementById('stR') }
-];
-let sliderPos     = 0.0;
-let lastSliderPos = 0.0;
-let sliderVel     = 0.0;
-let isDragging    = false;
-let streamAccum   = 0;
-
-/* ===== DOT / HALO STATE ===== */
-const DOT_R   = 4;      // รัศมีจุดคงที่ (px)
-let dotGlow   = 0;      // 0=แดง  1=ขาว
-let haloR     = 0;      // รัศมี halo ที่ smooth แล้ว
-let haloPulse = 0;      // phase shimmer
-
-/* ===== CONTROLS ===== */
-function adj(key, delta) {
-  config[key] = Math.max(1, Math.min(4, config[key] + delta));
-  document.getElementById('v-' + key).innerText = config[key];
+/* ════════════════════════════════
+   CANVAS
+════════════════════════════════ */
+const canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
+let W,H;
+const bgImg=new Image(); bgImg.src='https://sumet-y.github.io/wit/breath/abc3.png';
+let imgLoaded=false; bgImg.onload=()=>{imgLoaded=true;};
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+window.onresize=resize; resize();
+function getMetrics(){
+  const r=Math.max(W/bgImg.width,H/bgImg.height),nw=bgImg.width*r,nh=bgImg.height*r;
+  return{nx:(W-nw)/2,ny:(H-nh)/2,nw,nh,fx:(W-nw)/2+nw*0.52,fy:(H-nh)/2+nh*0.45};
 }
-document.querySelectorAll('input[name="m"]').forEach(r => {
-  r.onchange = e => {
-    config.mode = e.target.value;
-    document.getElementById('autoSet').style.display = config.mode === 'auto' ? 'flex' : 'none';
-    const op = config.mode === 'auto' ? '0.3' : '1';
-    document.getElementById('uiL').style.opacity = op;
-    document.getElementById('uiR').style.opacity = op;
-    autoPhase = 0; sliderVel = 0; streamAccum = 0;
+
+/* ════════════════════════════════
+   COLLAPSE PANEL
+════════════════════════════════ */
+let panelOpen=true;
+function togglePanel(){
+  panelOpen=!panelOpen;
+  document.getElementById('panelBody').classList.toggle('collapsed',!panelOpen);
+  document.getElementById('btnCollapse').textContent=panelOpen?'−':'＋';
+}
+
+/* ════════════════════════════════
+   INTENSITY  1–10
+════════════════════════════════ */
+let intensity=3;
+function iNorm(){return(intensity-1)/9;}
+function streamWidthMul(){return 0.3+iNorm()*1.4;}
+function streamAlphaMul(){return 0.35+iNorm()*0.65;}
+function streamRateMul(){return 0.2+iNorm()*2.8;}
+function streamLifeMul(){return 1.4-iNorm()*0.8;}
+function streamCurveMul(){return 0.15+iNorm()*0.85;}
+function particleRate(){return iNorm()>0.44?(iNorm()-0.44)/0.56:0;}
+// halo max radius สัมพันธ์กับ intensity
+function haloMaxR(){return 40+iNorm()*90;}  // 40px–130px
+
+const iTrack=document.getElementById('intensityTrack');
+const iThumb=document.getElementById('intensityThumb');
+const iValEl=document.getElementById('intensityVal');
+let iDrag=false;
+function setIntensityFromX(cx){
+  const r=iTrack.getBoundingClientRect();
+  const t=Math.max(0,Math.min(1,(cx-r.left)/r.width));
+  intensity=Math.round(1+t*9);
+  iThumb.style.left=(t*100)+'%'; iValEl.textContent=intensity;
+}
+iTrack.addEventListener('mousedown', e=>{iDrag=true;setIntensityFromX(e.clientX);});
+iTrack.addEventListener('touchstart',e=>{iDrag=true;setIntensityFromX(e.touches[0].clientX);},{passive:true});
+window.addEventListener('mousemove', e=>{if(iDrag)setIntensityFromX(e.clientX);});
+window.addEventListener('touchmove', e=>{if(iDrag)setIntensityFromX(e.touches[0].clientX);},{passive:true});
+window.addEventListener('mouseup',   ()=>{iDrag=false;});
+window.addEventListener('touchend',  ()=>{iDrag=false;});
+
+/* ════════════════════════════════
+   APP MODE
+════════════════════════════════ */
+let appMode='manual';
+document.querySelectorAll('input[name="m"]').forEach(r=>{
+  r.onchange=e=>{
+    appMode=e.target.value;
+    const isAuto=appMode==='auto';
+    document.getElementById('autoSet').style.display=isAuto?'flex':'none';
+    document.getElementById('uiL').style.opacity=isAuto?'0.3':'1';
+    document.getElementById('uiR').style.opacity=isAuto?'0.3':'1';
+    if(isAuto){setRunning(false);}  // default stopped when switching to auto
+    autoPhaseIdx=0;autoPhaseTime=0;sliderVel=0;streamAccum=0;
+    sliderPos=lastSliderPos=0;updateSliderUI(0,0);
   };
 });
 
-function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-window.onresize = resize; resize();
+/* ════════════════════════════════
+   RUN / STOP
+════════════════════════════════ */
+let isRunning=false;
+const PHASE_INPUTS=['inhale','hold','exhale','rest'];
+function setRunning(v){
+  isRunning=v;
+  const btn=document.getElementById('btnRun');
+  btn.textContent=v?'■ หยุด':'▶ เริ่ม';
+  btn.className='btn-run '+(v?'stop':'run');
+  // disable/enable inputs & ± buttons while running
+  PHASE_INPUTS.forEach(k=>{
+    document.getElementById('inp-'+k).disabled=v;
+    document.getElementById('btn-'+k+'-m').disabled=v;
+    document.getElementById('btn-'+k+'-p').disabled=v;
+  });
+  if(!v){
+    // reset sliders to rest position
+    autoPhaseIdx=0;autoPhaseTime=0;sliderVel=0;streamAccum=0;
+    sliderPos=lastSliderPos=0;updateSliderUI(0,0);
+    PHASE_INPUTS.forEach(k=>document.getElementById('bar-'+k).style.width='0%');
+    document.getElementById('phaseLabel').textContent='';
+  }
+}
+function toggleRun(){setRunning(!isRunning);}
 
-function updateSliderUI(pos) {
-  const p = Math.max(0, Math.min(1, pos));
-  slEls.forEach(s => {
-    s.t.style.bottom = (p * RANGE + 5)  + 'px';
-    s.f.style.height = (p * RANGE + 10) + 'px';
+/* ════════════════════════════════
+   PHASE CONTROLS
+════════════════════════════════ */
+const phases={inhale:4,hold:0,exhale:4,rest:0};
+const PHASE_ORDER=['inhale','hold','exhale','rest'];
+const PHASE_TH={inhale:'หายใจเข้า ↑',hold:'หยุด --',exhale:'หายใจออก ↓',rest:'หยุด --'};
+let autoPhaseIdx=0,autoPhaseTime=0;
+function getPhaseVal(k){return parseFloat(document.getElementById('inp-'+k).value)||0;}
+function clampPhase(k){
+  const el=document.getElementById('inp-'+k),min=k==='hold'||k==='rest'?0:0.01;
+  let v=parseFloat(el.value);if(isNaN(v))v=min;
+  v=Math.round(Math.max(min,Math.min(8,v))*100)/100;
+  el.value=v;phases[k]=v;
+}
+function adjPhase(k,d){
+  const el=document.getElementById('inp-'+k),min=k==='hold'||k==='rest'?0:0.01;
+  let v=parseFloat(el.value)||0;
+  v=parseFloat((Math.max(min,Math.min(8,v+d))).toFixed(2));
+  el.value=v;phases[k]=v;
+}
+
+/* ── slider travel (0–1) สัมพันธ์กับ intensity ──
+   intensity สูง = ขึ้นสุด-ลงสุด
+   intensity ต่ำ  = ขึ้น-ลงนิดเดียว                */
+function sliderTravel(){return 0.15+iNorm()*0.85;}  // 0.15–1.0
+
+function tickAuto(dt){
+  if(!isRunning) return;
+  PHASE_ORDER.forEach(k=>{phases[k]=getPhaseVal(k);});
+  const key=PHASE_ORDER[autoPhaseIdx];
+  const phaseDur=Math.max(0.001,phases[key]);
+  autoPhaseTime+=dt;
+  const progress=Math.min(1,autoPhaseTime/phaseDur);
+  const travel=sliderTravel();  // ระยะขึ้น-ลง
+
+  PHASE_ORDER.forEach(k=>{document.getElementById('bar-'+k).style.width='0%';});
+  document.getElementById('bar-'+key).style.width=(progress*100)+'%';
+  document.getElementById('phaseLabel').textContent=PHASE_TH[key];
+
+  if(key==='inhale'){
+    sliderPos=progress*travel;
+    sliderVel=sliderVel*0.5+0.018*0.5;
+  } else if(key==='hold'){
+    sliderPos=travel;
+    sliderVel*=(1-Math.min(1,8*dt));
+  } else if(key==='exhale'){
+    sliderPos=(1-progress)*travel;
+    sliderVel=sliderVel*0.5+(-0.018)*0.5;
+  } else {
+    sliderPos=0;
+    sliderVel*=(1-Math.min(1,8*dt));
+  }
+  updateSliderUI(sliderPos,travel);
+
+  if(autoPhaseTime>=phaseDur){
+    autoPhaseTime=0;
+    let next=(autoPhaseIdx+1)%4,guard=0;
+    while(phases[PHASE_ORDER[next]]<=0&&guard++<4) next=(next+1)%4;
+    autoPhaseIdx=next;
+  }
+}
+
+/* ════════════════════════════════
+   SLIDER UI
+════════════════════════════════ */
+const SL_H=200,THUMB=34,RANGE=SL_H-THUMB-10;
+const slEls=[
+  {t:document.getElementById('shL'),f:document.getElementById('sfL'),el:document.getElementById('stL')},
+  {t:document.getElementById('shR'),f:document.getElementById('sfR'),el:document.getElementById('stR')}
+];
+let sliderPos=0,lastSliderPos=0,sliderVel=0,isDragging=false,streamAccum=0;
+
+// travel: cap position สำหรับ auto (ไม่ต้องขึ้นสุด)
+function updateSliderUI(pos,travel=1){
+  const maxPos=travel;
+  const p=Math.max(0,Math.min(maxPos,pos));
+  const pNorm=p; // ใช้ pos โดยตรงกับ RANGE (0–1)
+  slEls.forEach(s=>{
+    s.t.style.bottom=(pNorm*RANGE+5)+'px';
+    s.f.style.height=(pNorm*RANGE+10)+'px';
   });
 }
-function getPosFromEvent(e) {
-  const rect = slEls[0].el.getBoundingClientRect();
-  const cy   = e.touches ? e.touches[0].clientY : e.clientY;
-  return Math.max(0, Math.min(1, 1 - (cy - rect.top - THUMB / 2) / RANGE));
+function getPosFromEvent(e){
+  const rect=slEls[0].el.getBoundingClientRect(),cy=e.touches?e.touches[0].clientY:e.clientY;
+  return Math.max(0,Math.min(1,1-(cy-rect.top-THUMB/2)/RANGE));
 }
-window.onmousedown = window.ontouchstart = e => {
-  if (e.target.closest('.st') && config.mode === 'manual') {
-    isDragging = true;
-    sliderPos = lastSliderPos = getPosFromEvent(e);
-    updateSliderUI(sliderPos);
+window.onmousedown=window.ontouchstart=e=>{
+  if(e.target.closest('.st')&&appMode==='manual'){
+    isDragging=true;sliderPos=lastSliderPos=getPosFromEvent(e);updateSliderUI(sliderPos);
   }
 };
-window.onmousemove = window.ontouchmove = e => {
-  if (isDragging && config.mode === 'manual') {
-    sliderPos = getPosFromEvent(e);
-    updateSliderUI(sliderPos);
-  }
+window.onmousemove=window.ontouchmove=e=>{
+  if(isDragging&&appMode==='manual'){sliderPos=getPosFromEvent(e);updateSliderUI(sliderPos);}
 };
-window.onmouseup = window.ontouchend = () => { isDragging = false; };
+window.onmouseup=window.ontouchend=()=>{isDragging=false;};
 
-/* ===== METRICS ===== */
-function getMetrics() {
-  const r  = Math.max(W / bgImg.width, H / bgImg.height);
-  const nw = bgImg.width * r, nh = bgImg.height * r;
-  return {
-    nx:(W-nw)/2, ny:(H-nh)/2, nw, nh,
-    fx:(W-nw)/2 + nw*0.52,
-    fy:(H-nh)/2 + nh*0.45
-  };
+/* ════════════════════════════════
+   STREAMS (bezier)
+════════════════════════════════ */
+const streams=[];
+function addStream(dir,baseStrength,fx,fy){
+  const IN=iNorm(),s=Math.min(1,Math.max(0.05,baseStrength));
+  const ang=70*Math.PI/180;
+  const dist=(100+160*IN)+(80+180*IN)*s;
+  const far={x:fx+Math.cos(ang)*dist,y:fy+Math.sin(ang)*dist};
+  const near={x:fx+6,y:fy+3};
+  const perp={x:Math.sin(ang),y:-Math.cos(ang)};
+  const spreadMag=(15+IN*35)*(Math.random()-0.5);
+  const p0=dir>0?{x:far.x+perp.x*spreadMag,y:far.y+perp.y*spreadMag}:{x:near.x+perp.x*spreadMag*0.15,y:near.y+perp.y*spreadMag*0.15};
+  const p3=dir>0?{x:near.x+perp.x*spreadMag*0.15,y:near.y+perp.y*spreadMag*0.15}:{x:far.x+perp.x*spreadMag,y:far.y+perp.y*spreadMag};
+  const cm=dist*(0.1+streamCurveMul()*0.5),po=(Math.random()-0.5)*cm;
+  const cp1={x:p0.x+(p3.x-p0.x)*0.33+perp.x*po,y:p0.y+(p3.y-p0.y)*0.33+perp.y*po};
+  const cp2={x:p0.x+(p3.x-p0.x)*0.66+perp.x*po*0.5,y:p0.y+(p3.y-p0.y)*0.66+perp.y*po*0.5};
+  const life=Math.round((40+s*50)*streamLifeMul());
+  const maxW=(5+s*18)*streamWidthMul();
+  streams.push({p0,cp1,cp2,p3,l:0,ml:Math.max(10,life),maxW,c:dir>0?'110,195,255':'130,250,180'});
 }
-
-/* ===== STREAMS (bezier) ===== */
-const streams = [];
-
-function addStream(direction, strength, fx, fy) {
-  const s    = Math.min(1, strength);
-  const ang  = 70 * Math.PI / 180;
-  const dist = 160 + 260 * s;
-
-  const far  = { x: fx + Math.cos(ang)*dist, y: fy + Math.sin(ang)*dist };
-  const near = { x: fx + 6,                  y: fy + 3 };
-
-  const perp = { x: Math.sin(ang), y: -Math.cos(ang) };
-  const sp   = (Math.random() - 0.5) * 30;
-  const p0   = direction > 0
-    ? { x: far.x  + perp.x*sp,        y: far.y  + perp.y*sp }
-    : { x: near.x + perp.x*sp*0.15,   y: near.y + perp.y*sp*0.15 };
-  const p3   = direction > 0
-    ? { x: near.x + perp.x*sp*0.15,   y: near.y + perp.y*sp*0.15 }
-    : { x: far.x  + perp.x*sp,        y: far.y  + perp.y*sp };
-
-  const cm   = dist * 0.35;
-  const po   = (Math.random() - 0.5) * cm;
-  const cp1  = { x: p0.x+(p3.x-p0.x)*0.33+perp.x*po,   y: p0.y+(p3.y-p0.y)*0.33+perp.y*po };
-  const cp2  = { x: p0.x+(p3.x-p0.x)*0.66+perp.x*po*.5, y: p0.y+(p3.y-p0.y)*0.66+perp.y*po*.5 };
-
-  streams.push({
-    p0, cp1, cp2, p3,
-    l:0, ml: Math.round(50 + s*60),
-    maxW: 6 + s*20,
-    c: direction > 0 ? '110,195,255' : '130,250,180'
-  });
+function bezierPt(s,tt){
+  const u=1-tt;
+  return{x:u*u*u*s.p0.x+3*u*u*tt*s.cp1.x+3*u*tt*tt*s.cp2.x+tt*tt*tt*s.p3.x,
+         y:u*u*u*s.p0.y+3*u*u*tt*s.cp1.y+3*u*tt*tt*s.cp2.y+tt*tt*tt*s.p3.y};
 }
-
-function bezierPt(s, tt) {
-  const u = 1 - tt;
-  return {
-    x: u*u*u*s.p0.x + 3*u*u*tt*s.cp1.x + 3*u*tt*tt*s.cp2.x + tt*tt*tt*s.p3.x,
-    y: u*u*u*s.p0.y + 3*u*u*tt*s.cp1.y + 3*u*tt*tt*s.cp2.y + tt*tt*tt*s.p3.y
-  };
-}
-
-function drawStream(s) {
-  const t     = s.l / s.ml;
-  const alpha = Math.sin(t * Math.PI);
-  if (alpha < 0.005) return;
-
-  const STEPS = 20;
-  const drawPath = (lineW, a) => {
-    ctx.beginPath();
-    ctx.lineWidth   = lineW;
-    ctx.lineCap     = 'round';
-    ctx.lineJoin    = 'round';
-    ctx.strokeStyle = `rgba(${s.c},${a.toFixed(3)})`;
-    const pt0 = bezierPt(s, 0);
-    ctx.moveTo(pt0.x, pt0.y);
-    for (let i = 1; i <= STEPS; i++) ctx.lineTo(...Object.values(bezierPt(s, (i/STEPS)*t)));
+function drawStream(s){
+  const t=s.l/s.ml,fade=Math.sin(t*Math.PI);
+  if(fade<0.005)return;
+  const aS=streamAlphaMul(),STEPS=20;
+  const draw=(lw,a)=>{
+    ctx.beginPath();ctx.lineWidth=lw;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.strokeStyle=`rgba(${s.c},${Math.min(1,a).toFixed(3)})`;
+    const pt0=bezierPt(s,0);ctx.moveTo(pt0.x,pt0.y);
+    for(let i=1;i<=STEPS;i++){const p=bezierPt(s,(i/STEPS)*t);ctx.lineTo(p.x,p.y);}
     ctx.stroke();
   };
-
-  drawPath(s.maxW * 1.8, alpha * 0.12);   // outer soft
-  drawPath(s.maxW,       alpha * 0.42);   // core
-  drawPath(s.maxW * 0.2, alpha * 0.85);   // highlight
+  draw(s.maxW*1.8,fade*0.10*aS);
+  draw(s.maxW,    fade*0.40*aS);
+  draw(s.maxW*0.22,fade*0.85*aS);
 }
 
-/* ===================================================================
-   DOT + HALO
-   แก้หลัก: ใช้ binary on/off สำหรับ "กำลังเลื่อน" แทนการ scale ตาม
-   velocity → ทำให้ glow เต็มที่แม้เลื่อนช้า
-=================================================================== */
-function updateDot(isMoving, dt) {
-  // dotGlow: ถ้ากำลังเลื่อน → ขึ้นไปหา 1 เต็มๆ เสมอ (ไม่ scale ตาม speed)
-  const glowTarget = isMoving ? 1.0 : 0.0;
-  const rate = glowTarget > dotGlow ? 10 : 1.8;   // ขึ้นเร็ว ลงช้ามาก
-  dotGlow += (glowTarget - dotGlow) * rate * dt;
-  dotGlow  = Math.max(0, Math.min(1, dotGlow));
-
-  // halo radius: ตาม dotGlow + shimmer เบาๆ
-  haloPulse += dt * 2.0;
-  const shimmer   = Math.sin(haloPulse) * 0.05 + 0.95;
-  const haloTarget = dotGlow * 110 * shimmer;
-  haloR += (haloTarget - haloR) * Math.min(1, 7 * dt);
+/* ════════════════════════════════
+   PARTICLES
+════════════════════════════════ */
+const particles=[];
+function addParticles(dir,fx,fy){
+  const IN=iNorm(),pr=particleRate();if(pr<=0)return;
+  const count=Math.floor(pr*4)+1,ang=70*Math.PI/180;
+  for(let i=0;i<count;i++){
+    const speed=(1.5+Math.random()*3)*IN*2.5,spread=(Math.random()-0.5)*0.5;
+    const vx=Math.cos(ang+spread)*(dir>0?-speed:speed);
+    const vy=Math.sin(ang+spread)*(dir>0?-speed:speed);
+    const life=Math.round(25+Math.random()*30),warm=IN>0.7;
+    const col=warm?`${220+Math.floor(Math.random()*35)},${100+Math.floor(Math.random()*80)},${30+Math.floor(Math.random()*60)}`:(dir>0?'130,210,255':'160,255,200');
+    particles.push({x:fx+6,y:fy+3,vx,vy,l:0,ml:life,r:1+Math.random()*2.5*IN,col});
+  }
+}
+function tickParticles(dt){
+  for(let i=particles.length-1;i>=0;i--){
+    const p=particles[i];
+    p.x+=p.vx*(dt*60);p.y+=p.vy*(dt*60);p.vx*=0.96;p.vy*=0.96;p.l++;
+    const fade=1-p.l/p.ml;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${p.col},${(fade*0.85).toFixed(3)})`;ctx.fill();
+    if(p.l>=p.ml)particles.splice(i,1);
+  }
 }
 
-function drawDot(fx, fy) {
-  // --- halo layers ---
-  if (haloR > 1 && dotGlow > 0.01) {
-    const layers = [
-      { r: haloR * 3.2, a: dotGlow * 0.07  },
-      { r: haloR * 2.1, a: dotGlow * 0.14  },
-      { r: haloR * 1.4, a: dotGlow * 0.28  },
-      { r: haloR * 0.8, a: dotGlow * 0.50  },
+/* ════════════════════════════════
+   DOT + HALO  (intensity-aware radius)
+════════════════════════════════ */
+const DOT_R=4;
+let dotGlow=0,haloR=0,haloPulse=0;
+function updateDot(isMoving,dt){
+  const target=isMoving?1.0:0.0;
+  dotGlow+=(target-dotGlow)*(target>dotGlow?10:1.8)*dt;
+  dotGlow=Math.max(0,Math.min(1,dotGlow));
+  haloPulse+=dt*2.0;
+  const shimmer=Math.sin(haloPulse)*0.05+0.95;
+  // รัศมีขึ้นกับทั้ง dotGlow และ intensity
+  const haloTarget=dotGlow*haloMaxR()*shimmer;
+  haloR+=(haloTarget-haloR)*Math.min(1,7*dt);
+}
+function drawDot(fx,fy){
+  if(haloR>1&&dotGlow>0.01){
+    const layers=[
+      {r:haloR*3.2,a:dotGlow*0.07},{r:haloR*2.1,a:dotGlow*0.14},
+      {r:haloR*1.4,a:dotGlow*0.28},{r:haloR*0.8,a:dotGlow*0.50}
     ];
-    for (const h of layers) {
-      if (h.r < 1) continue;
-      const g = ctx.createRadialGradient(fx, fy, 0, fx, fy, h.r);
-      g.addColorStop(0,    `rgba(255,250,235,${h.a.toFixed(3)})`);
-      g.addColorStop(0.45, `rgba(230,242,255,${(h.a*0.38).toFixed(3)})`);
-      g.addColorStop(1,    'rgba(200,225,255,0)');
-      ctx.beginPath();
-      ctx.arc(fx, fy, h.r, 0, Math.PI*2);
-      ctx.fillStyle = g;
-      ctx.fill();
+    for(const h of layers){
+      if(h.r<1)continue;
+      const g=ctx.createRadialGradient(fx,fy,0,fx,fy,h.r);
+      g.addColorStop(0,`rgba(255,250,235,${h.a.toFixed(3)})`);
+      g.addColorStop(0.45,`rgba(230,242,255,${(h.a*0.38).toFixed(3)})`);
+      g.addColorStop(1,'rgba(200,225,255,0)');
+      ctx.beginPath();ctx.arc(fx,fy,h.r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
     }
   }
-
-  // --- dot color: แดง → ขาว ตาม dotGlow ---
-  const rv = Math.round(200 + 55  * dotGlow);
-  const gv = Math.round(30  + 225 * dotGlow);
-  const bv = Math.round(30  + 225 * dotGlow);
-
-  // soft ring รอบ dot
-  const ringR = DOT_R + 2 + dotGlow * 5;
-  const ring  = ctx.createRadialGradient(fx, fy, 0, fx, fy, ringR);
-  ring.addColorStop(0,   `rgba(${rv},${gv},${bv},0.9)`);
-  ring.addColorStop(0.5, `rgba(${rv},${gv},${bv},0.35)`);
-  ring.addColorStop(1,   `rgba(${rv},${gv},${bv},0)`);
-  ctx.beginPath();
-  ctx.arc(fx, fy, ringR, 0, Math.PI*2);
-  ctx.fillStyle = ring;
-  ctx.fill();
-
-  // dot หลัก
-  ctx.beginPath();
-  ctx.arc(fx, fy, DOT_R, 0, Math.PI*2);
-  ctx.fillStyle = `rgb(${rv},${gv},${bv})`;
-  ctx.fill();
-
-  // specular
-  if (dotGlow > 0.05) {
-    ctx.beginPath();
-    ctx.arc(fx - DOT_R*0.3, fy - DOT_R*0.3, DOT_R*0.35, 0, Math.PI*2);
-    ctx.fillStyle = `rgba(255,255,255,${(dotGlow*0.88).toFixed(2)})`;
-    ctx.fill();
+  const rv=Math.round(200+55*dotGlow),gv=Math.round(30+225*dotGlow),bv=Math.round(30+225*dotGlow);
+  const ringR=DOT_R+2+dotGlow*5;
+  const ring=ctx.createRadialGradient(fx,fy,0,fx,fy,ringR);
+  ring.addColorStop(0,`rgba(${rv},${gv},${bv},0.9)`);
+  ring.addColorStop(0.5,`rgba(${rv},${gv},${bv},0.35)`);
+  ring.addColorStop(1,`rgba(${rv},${gv},${bv},0)`);
+  ctx.beginPath();ctx.arc(fx,fy,ringR,0,Math.PI*2);ctx.fillStyle=ring;ctx.fill();
+  ctx.beginPath();ctx.arc(fx,fy,DOT_R,0,Math.PI*2);
+  ctx.fillStyle=`rgb(${rv},${gv},${bv})`;ctx.fill();
+  if(dotGlow>0.05){
+    ctx.beginPath();ctx.arc(fx-DOT_R*0.3,fy-DOT_R*0.3,DOT_R*0.35,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${(dotGlow*0.88).toFixed(2)})`;ctx.fill();
   }
 }
 
-/* ===== MAIN LOOP ===== */
-let lastT = 0;
-function anim(ts) {
-  const dt = Math.min((ts - lastT) / 1000, 0.05);
-  lastT = ts;
+/* ════════════════════════════════
+   DURATION LABEL  (กลางจอ ระหว่างสไลด์)
+   แสดงเมื่อ dotGlow > 0 (= ลมไหล)
+   สีฟ้า=เข้า  สีเขียว=ออก
+════════════════════════════════ */
+let labelAlpha=0, labelDir=1, labelText='';
 
-  ctx.clearRect(0, 0, W, H);
-  if (!imgLoaded) { requestAnimationFrame(anim); return; }
+function updateLabel(isMoving, dir, dt){
+  const target=isMoving?1:0;
+  labelAlpha+=(target-labelAlpha)*(target>labelAlpha?8:2)*dt;
+  labelAlpha=Math.max(0,Math.min(1,labelAlpha));
+  if(isMoving){ labelDir=dir; }
+}
 
-  const m = getMetrics();
+function drawLabel(fx,fy){
+  if(labelAlpha<0.01) return;
+  // ตำแหน่ง: กึ่งกลางหน้าจอ แนวนอน ระดับเดียวกับ slider thumb
+  // ใช้ fx,fy ของปาก + offset ขึ้น ให้อยู่กลางระหว่างสองแท่ง
+  // ตำแหน่ง: กลางจอแนวนอน, เกือบล่างสุด (ระหว่างแท่งสไลด์)
+  const lx = W / 2;
+  const ly = H - 180;   // ใกล้ขอบล่าง ระหว่างสองแท่งสไลด์
+
+  const isIn = labelDir > 0;
+  const col  = isIn
+    ? `rgba(110,200,255,${labelAlpha.toFixed(3)})`
+    : `rgba(120,255,170,${labelAlpha.toFixed(3)})`;
+
+  ctx.save();
+  ctx.font = '400 16px Sarabun, sans-serif';
+  ctx.fillStyle = col;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.shadowColor = isIn ? 'rgba(100,180,255,0.65)' : 'rgba(100,255,150,0.65)';
+  ctx.shadowBlur  = 14;
+  ctx.fillText('ความนาน', lx, ly);
+  ctx.restore();
+}
+
+/* ════════════════════════════════
+   MAIN LOOP
+════════════════════════════════ */
+let lastT=0;
+function anim(ts){
+  const dt=Math.min((ts-lastT)/1000,0.05);
+  lastT=ts;
+  ctx.clearRect(0,0,W,H);
+  if(!imgLoaded){requestAnimationFrame(anim);return;}
+  const m=getMetrics();
 
   /* velocity */
-  let currentVel = 0;
-  if (config.mode === 'auto') {
-    const speedTbl = [0.010, 0.022, 0.040, 0.068];
-    const lenTbl   = [0.3, 0.5, 0.7, 1.0];
-    const prev     = autoPhase;
-    autoPhase     += speedTbl[config.speed - 1];
-    const amp      = lenTbl[config.len - 1];
-    currentVel     = (Math.sin(autoPhase) - Math.sin(prev)) * amp;
-    sliderPos      = (Math.sin(autoPhase) * amp + 1) / 2;
-    updateSliderUI(sliderPos);
-  } else {
-    currentVel = sliderPos - lastSliderPos;
-  }
-  lastSliderPos = sliderPos;
-
-  sliderVel = sliderVel * 0.72 + currentVel * 0.28;
-
-  const absVel   = Math.abs(sliderVel);
-  const dir      = sliderVel >= 0 ? 1 : -1;
-  // "กำลังเลื่อน" = threshold ต่ำมาก ไม่ว่าจะช้าแค่ไหน
-  const isMoving = absVel > 0.0003;
-
-  /* spawn streams */
-  if (isMoving) {
-    const rate  = 8 + absVel * 160;
-    streamAccum += rate * dt;
-    while (streamAccum >= 1) {
-      addStream(dir, Math.min(1, absVel * 12), m.fx, m.fy);
-      streamAccum -= 1;
+  if(appMode==='auto'){
+    tickAuto(dt);
+    if(!isRunning){
+      sliderVel*=(1-Math.min(1,6*dt));
     }
   } else {
-    streamAccum = 0;
+    const cv=sliderPos-lastSliderPos;
+    lastSliderPos=sliderPos;
+    sliderVel=sliderVel*0.72+cv*0.28;
   }
 
-  /* draw */
-  ctx.drawImage(bgImg, m.nx, m.ny, m.nw, m.nh);
+  const absVel=Math.abs(sliderVel);
+  const dir=sliderVel>=0?1:-1;
+  const isMoving=absVel>0.0003;
 
-  for (let i = streams.length - 1; i >= 0; i--) {
-    drawStream(streams[i]);
-    streams[i].l++;
-    if (streams[i].l >= streams[i].ml) streams.splice(i, 1);
+  /* spawn */
+  if(isMoving){
+    const baseRate=(8+absVel*160)*streamRateMul();
+    streamAccum+=baseRate*dt;
+    while(streamAccum>=1){addStream(dir,Math.min(1,absVel*12),m.fx,m.fy);streamAccum-=1;}
+    const pA=particleRate()*(3+absVel*80)*dt;
+    if(Math.random()<pA) addParticles(dir,m.fx,m.fy);
+  } else {
+    streamAccum=0;
   }
 
-  updateDot(isMoving, dt);
-  drawDot(m.fx, m.fy);
+  /* draw bg */
+  ctx.drawImage(bgImg,m.nx,m.ny,m.nw,m.nh);
+
+  /* draw streams */
+  for(let i=streams.length-1;i>=0;i--){
+    drawStream(streams[i]);streams[i].l++;
+    if(streams[i].l>=streams[i].ml)streams.splice(i,1);
+  }
+
+  /* draw particles */
+  tickParticles(dt);
+
+  /* draw dot */
+  updateDot(isMoving,dt);
+  drawDot(m.fx,m.fy);
+
+  /* draw center label */
+  updateLabel(isMoving,dir,dt);
+  drawLabel(m.fx,m.fy);
 
   requestAnimationFrame(anim);
 }
-
-requestAnimationFrame(t => { lastT = t; anim(t); });
+requestAnimationFrame(t=>{lastT=t;anim(t);});
 </script>
 
 </body>
