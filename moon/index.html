@@ -24,7 +24,7 @@
     background-color: white;
     border-radius: 50%;
     position: absolute;
-    top: 50%;
+    top: 20%;
     left: 50%;
     transform: translate(-50%, -50%);
     transition: width 8.3s ease, height 8.3s ease, box-shadow 8.3s ease;
@@ -53,19 +53,7 @@
     border-radius: 4px;
   }
 
-  .mp3-wrapper {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
-    display: flex;
-    justify-content: center;
-  }
 
-  .mp3-wrapper audio {
-    width: 100%;
-    max-width: 400px;
-  }
 </style>
 </head>
 <body>
@@ -73,16 +61,6 @@
 <div id="circle"></div>
 
 <button class="bottomleft" id="toggleButton">Hold</button>
-
-<!-- audio: playsinline + preload สำหรับ iOS; ใส่ไฟล์หลายนามสกุลให้ browser เลือก -->
-<div class="mp3-wrapper">
-  <audio controls playsinline preload="metadata" id="audioPlayer">
-    <source src="Weightless.mp3" type="audio/mpeg">
-    <source src="Weightless.m4a" type="audio/mp4">
-    <source src="Weightless.weba" type="audio/webm">
-    Your browser does not support the audio element.
-  </audio>
-</div>
 
 <script>
   var circle = document.getElementById("circle");
