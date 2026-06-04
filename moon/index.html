@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <title>Moonlight Glow Circle</title>
 <style>
+  body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #222;
+    overflow: hidden;
+    /* Prevent iOS text selection / callout on long press */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
   #circle {
     width: 50px;
     height: 50px;
@@ -16,64 +27,90 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: width 8.3s ease, height 8.3s ease, box-shadow 8.3s ease; /* Smooth transition for size and box-shadow changes */
-    box-shadow: 0 0 10px 10px rgba(0, 0, 255, 0); /* Initial glow effect */
+    transition: width 8.3s ease, height 8.3s ease, box-shadow 8.3s ease;
+    box-shadow: 0 0 10px 10px rgba(248, 248, 255, 0);
   }
+
   .bottomleft {
-  position: absolute;
-  bottom: 8px;
-  left: 16px;
-  background-color: #555555;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-body {
-  display: flex;
-  justify-content: center;
-  /*align-items: center;*/
-  min-height: 100vh;
-  background-color: #222;
-}
+    position: absolute;
+    bottom: 50vh; /* กลางจอในแนวตั้ง */
+    left: 16px;
+    transform: translateY(50%);
+    background-color: #555555;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    /* Prevent iOS zoom / highlight on tap */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
 
-.mp3 {
-  position: absolute;
-  bottom: 8px;
-  left: 100px;
-}
+  .mp3-wrapper {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    display: flex;
+    justify-content: center;
+  }
 
+  .mp3-wrapper audio {
+    width: 100%;
+    max-width: 400px;
+  }
 </style>
 </head>
 <body>
+
 <div id="circle"></div>
-<button class="bottomleft" id="toggleButton"></button>
-<audio class="mp3" controls >
-  <source src="Weightless.weba" type="audio/mpeg">
-</audio>
+
+<button class="bottomleft" id="toggleButton">Hold</button>
+
+<!-- audio: playsinline + preload สำหรับ iOS; ใส่ไฟล์หลายนามสกุลให้ browser เลือก -->
+<div class="mp3-wrapper">
+  <audio controls playsinline preload="metadata" id="audioPlayer">
+    <source src="Weightless.mp3" type="audio/mpeg">
+    <source src="Weightless.m4a" type="audio/mp4">
+    <source src="Weightless.weba" type="audio/webm">
+    Your browser does not support the audio element.
+  </audio>
+</div>
+
 <script>
   var circle = document.getElementById("circle");
   var toggleButton = document.getElementById("toggleButton");
-  toggleButton.addEventListener("mousedown", enlargeCircle);
-  toggleButton.addEventListener("touchstart", enlargeCircle);
-  toggleButton.addEventListener("mouseup", shrinkCircle);
-  toggleButton.addEventListener("touchend", shrinkCircle);
-  function enlargeCircle() {
+
+  function enlargeCircle(e) {
+    e.preventDefault(); // ป้องกัน iOS zoom / scroll
     circle.style.width = "300px";
     circle.style.height = "300px";
     circle.style.boxShadow = "0 0 20px 20px rgba(248, 248, 255, 0.5)";
   }
-  function shrinkCircle() {
+
+  function shrinkCircle(e) {
+    e.preventDefault();
     circle.style.width = "50px";
     circle.style.height = "50px";
     circle.style.boxShadow = "0 0 10px 10px rgba(248, 248, 255, 0)";
   }
-  
+
+  // Mouse events (desktop / Android)
+  toggleButton.addEventListener("mousedown", enlargeCircle);
+  toggleButton.addEventListener("mouseup", shrinkCircle);
+  toggleButton.addEventListener("mouseleave", shrinkCircle);
+
+  // Touch events (iOS & Android) – passive: false เพื่อให้ preventDefault ทำงานได้
+  toggleButton.addEventListener("touchstart", enlargeCircle, { passive: false });
+  toggleButton.addEventListener("touchend", shrinkCircle, { passive: false });
+  toggleButton.addEventListener("touchcancel", shrinkCircle, { passive: false });
 </script>
 </body>
 </html>
