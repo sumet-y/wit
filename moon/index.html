@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<title>Moonlight Glow Circle</title>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #222;
+    overflow: hidden;
+    /* Prevent iOS text selection / callout on long press */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  #circle {
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 8.3s ease, height 8.3s ease, box-shadow 8.3s ease;
+    box-shadow: 0 0 10px 10px rgba(248, 248, 255, 0);
+  }
+
+  .bottomleft {
+    background-color: #555555;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    /* Prevent iOS zoom / highlight on tap */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
+
+  .bottomright {
+    background-color: #555555;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: none;
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
+
+  .middlecount {
+    background-color: #777777;
+    border: none;
+    color: white;
+    padding: 15px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 4px 2px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    border-radius: 4px;
+    min-width: 60px;
+  }
+
+  .topbar {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toprow {
+    display: flex;
+    gap: 8px;
+  }
+
+  .topcount {
+    background-color: #777777;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    border-radius: 4px;
+    min-width: 60px;
+  }
+
+  .resetbtn {
+    background-color: #a33;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="circle"></div>
+
+<!-- บรรทัดบน: count ตัวล่างเดิม + Reset -->
+<div class="topbar">
+  <div class="toprow">
+    <button class="middlecount" id="middleCountButton">0</button>
+    <button class="resetbtn" id="resetButton">Reset</button>
+  </div>
+  <!-- บรรทัดล่างถัดลงมา: Hold ซ้าย + count ตัวแรก + Hold ขวา -->
+  <div class="toprow">
+    <button class="bottomleft" id="toggleButton">Hold</button>
+    <button class="topcount" id="topCountButton">0</button>
+    <button class="bottomright" id="toggleButtonRight">Hold</button>
+  </div>
+</div>
+
+<script>
+  var circle = document.getElementById("circle");
+  var toggleButton = document.getElementById("toggleButton");
+  var toggleButtonRight = document.getElementById("toggleButtonRight");
+  var middleCountButton = document.getElementById("middleCountButton");
+  var topCountButton = document.getElementById("topCountButton");
+  var resetButton = document.getElementById("resetButton");
+
+  var middleCount = 0;
+  var topCount = 0;
+
+  function enlargeCircle(e) {
+    e.preventDefault(); // ป้องกัน iOS zoom / scroll
+    circle.style.width = "300px";
+    circle.style.height = "300px";
+    circle.style.boxShadow = "0 0 20px 20px rgba(248, 248, 255, 0.5)";
+  }
+
+  function shrinkCircle(e) {
+    e.preventDefault();
+    circle.style.width = "50px";
+    circle.style.height = "50px";
+    circle.style.boxShadow = "0 0 10px 10px rgba(248, 248, 255, 0)";
+  }
+
+  // ปุ่ม Hold ซ้าย
+  toggleButton.addEventListener("mousedown", enlargeCircle);
+  toggleButton.addEventListener("mouseup", shrinkCircle);
+  toggleButton.addEventListener("mouseleave", shrinkCircle);
+  toggleButton.addEventListener("touchstart", enlargeCircle, { passive: false });
+  toggleButton.addEventListener("touchend", shrinkCircle, { passive: false });
+  toggleButton.addEventListener("touchcancel", shrinkCircle, { passive: false });
+
+  // ปุ่ม Hold ขวา (เหมือนกันทุกประการ)
+  toggleButtonRight.addEventListener("mousedown", enlargeCircle);
+  toggleButtonRight.addEventListener("mouseup", shrinkCircle);
+  toggleButtonRight.addEventListener("mouseleave", shrinkCircle);
+  toggleButtonRight.addEventListener("touchstart", enlargeCircle, { passive: false });
+  toggleButtonRight.addEventListener("touchend", shrinkCircle, { passive: false });
+  toggleButtonRight.addEventListener("touchcancel", shrinkCircle, { passive: false });
+
+  // ปุ่ม count ตรงกลาง
+  middleCountButton.addEventListener("click", function () {
+    middleCount++;
+    middleCountButton.textContent = middleCount;
+  });
+
+  // ปุ่ม count บนสุด
+  topCountButton.addEventListener("click", function () {
+    topCount++;
+    topCountButton.textContent = topCount;
+  });
+
+  // ปุ่ม reset: reset ทั้งสองตัวนับ
+  resetButton.addEventListener("click", function () {
+    middleCount = 0;
+    topCount = 0;
+    middleCountButton.textContent = middleCount;
+    topCountButton.textContent = topCount;
+  });
+</script>
+</body>
+</html>
