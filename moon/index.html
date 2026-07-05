@@ -12,53 +12,90 @@
     min-height: 100vh;
     background-color: #222;
     overflow: hidden;
-    /* Prevent iOS text selection / callout on long press */
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
   }
 
+  /* วงกลม: เริ่มต้นแบบขยายเต็มดวงตั้งแต่โหลดหน้า */
   #circle {
-    width: 50px;
-    height: 50px;
+    width: 300px;
+    height: 300px;
     background-color: white;
     border-radius: 50%;
     position: absolute;
     top: 55%;
     left: 50%;
     transform: translate(-50%, -50%);
-    transition: width 8.3s ease, height 8.3s ease, box-shadow 8.3s ease;
-    box-shadow: 0 0 10px 10px rgba(248, 248, 255, 0);
+    transition: none;
+    box-shadow: 0 0 20px 20px rgba(248, 248, 255, 0.5);
   }
 
-  .bottomleft {
-    background-color: #555555;
+  /* แถวบน: Start / เวลา / Reset */
+  .topbar {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .startbtn {
+    background-color: #666666;
     border: none;
     color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
+    padding: 12px 24px;
     font-size: 16px;
-    margin: 4px 2px;
     cursor: pointer;
-    /* Prevent iOS zoom / highlight on tap */
     -webkit-tap-highlight-color: transparent;
-    touch-action: none;
+    touch-action: manipulation;
     -webkit-appearance: none;
     border-radius: 4px;
   }
 
-  .bottomright {
+  .timerdisplay {
+    background-color: #777777;
+    color: white;
+    padding: 12px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 4px;
+    min-width: 70px;
+    text-align: center;
+  }
+
+  .resetbtn {
+    background-color: #666666;
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-appearance: none;
+    border-radius: 4px;
+  }
+
+  /* แถวล่าง: Out / count / In เอาไปไว้ด้านล่างสุดของจอ */
+  .midrow {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .outbtn, .inbtn {
     background-color: #555555;
     border: none;
     color: white;
     padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     touch-action: none;
@@ -71,44 +108,6 @@
     border: none;
     color: white;
     padding: 15px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 18px;
-    font-weight: bold;
-    margin: 4px 2px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    -webkit-appearance: none;
-    border-radius: 4px;
-    min-width: 60px;
-  }
-
-  .topbar {
-    position: absolute;
-    top: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .toprow {
-    display: flex;
-    gap: 8px;
-  }
-
-  .topcount {
-    background-color: #777777;
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
@@ -118,102 +117,156 @@
     border-radius: 4px;
     min-width: 60px;
   }
-
-  .resetbtn {
-    background-color: #777777;
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-    -webkit-appearance: none;
-    border-radius: 4px;
-  }
-
 </style>
 </head>
 <body>
 
 <div id="circle"></div>
 
-<!-- บรรทัดบน: count ตัวล่างเดิม + Reset -->
+<!-- แถวบน: Start / เวลา / Reset -->
 <div class="topbar">
-  <div class="toprow">
-    <button class="middlecount" id="middleCountButton">0</button>
-    <button class="resetbtn" id="resetButton">Reset</button>
-  </div>
-  <!-- บรรทัดล่างถัดลงมา: Hold ซ้าย + count ตัวแรก + Hold ขวา -->
-  <div class="toprow">
-    <button class="bottomleft" id="toggleButton">Hold</button>
-    <button class="topcount" id="topCountButton">0</button>
-    <button class="bottomright" id="toggleButtonRight">Hold</button>
-  </div>
+  <button class="startbtn" id="startButton">Start</button>
+  <div class="timerdisplay" id="timerDisplay">00:00</div>
+  <button class="resetbtn" id="resetButton">Reset</button>
+</div>
+
+<!-- แถวล่างสุด: Out / count / In -->
+<div class="midrow">
+  <button class="outbtn" id="outButton">Out</button>
+  <button class="middlecount" id="middleCountButton">0</button>
+  <button class="inbtn" id="inButton">In</button>
 </div>
 
 <script>
   var circle = document.getElementById("circle");
-  var toggleButton = document.getElementById("toggleButton");
-  var toggleButtonRight = document.getElementById("toggleButtonRight");
+  var outButton = document.getElementById("outButton");
+  var inButton = document.getElementById("inButton");
   var middleCountButton = document.getElementById("middleCountButton");
-  var topCountButton = document.getElementById("topCountButton");
+  var startButton = document.getElementById("startButton");
+  var timerDisplay = document.getElementById("timerDisplay");
   var resetButton = document.getElementById("resetButton");
 
-  var middleCount = 0;
-  var topCount = 0;
+  var count = 0;
+  var timerInterval = null;
+  var timerRunning = false;
+  var elapsedSeconds = 0;
 
-  function enlargeCircle(e) {
-    e.preventDefault(); // ป้องกัน iOS zoom / scroll
-    circle.style.width = "300px";
-    circle.style.height = "300px";
-    circle.style.boxShadow = "0 0 20px 20px rgba(248, 248, 255, 0.5)";
+  // ----- วงกลม: ขนาดขั้นต่ำ/สูงสุด และตัวแปรขนาดปัจจุบัน -----
+  var MIN_SIZE = 20;
+  var MAX_SIZE = 300;
+  var currentSize = MAX_SIZE; // เริ่มต้นขยายเต็มดวง
+  var ANIM_SPEED = 70; // px ต่อวินาที - ปรับได้ตามความรู้สึก "ลมหายใจ" ที่ต้องการ
+  var rafId = null;
+  var lastTimestamp = null;
+  var animDirection = null; // 'shrink' | 'grow'
+
+  function updateCircleSize(size) {
+    circle.style.width = size + "px";
+    circle.style.height = size + "px";
+    var ratio = size / MAX_SIZE;
+    var glow = Math.round(20 * ratio);
+    var alpha = (0.5 * ratio).toFixed(2);
+    circle.style.boxShadow = "0 0 " + glow + "px " + glow + "px rgba(248, 248, 255, " + alpha + ")";
   }
 
-  function shrinkCircle(e) {
-    e.preventDefault();
-    circle.style.width = "50px";
-    circle.style.height = "50px";
-    circle.style.boxShadow = "0 0 10px 10px rgba(248, 248, 255, 0)";
+  function animateCircle(timestamp) {
+    if (lastTimestamp === null) lastTimestamp = timestamp;
+    var deltaSec = (timestamp - lastTimestamp) / 1000;
+    lastTimestamp = timestamp;
+
+    if (animDirection === "shrink") {
+      currentSize = Math.max(MIN_SIZE, currentSize - ANIM_SPEED * deltaSec);
+    } else if (animDirection === "grow") {
+      currentSize = Math.min(MAX_SIZE, currentSize + ANIM_SPEED * deltaSec);
+    }
+    updateCircleSize(currentSize);
+
+    var reachedLimit = (animDirection === "shrink" && currentSize <= MIN_SIZE) ||
+                        (animDirection === "grow" && currentSize >= MAX_SIZE);
+
+    if (animDirection && !reachedLimit) {
+      rafId = requestAnimationFrame(animateCircle);
+    } else {
+      rafId = null;
+      lastTimestamp = null;
+    }
   }
 
-  // ปุ่ม Hold ซ้าย
-  toggleButton.addEventListener("mousedown", enlargeCircle);
-  toggleButton.addEventListener("mouseup", shrinkCircle);
-  toggleButton.addEventListener("mouseleave", shrinkCircle);
-  toggleButton.addEventListener("touchstart", enlargeCircle, { passive: false });
-  toggleButton.addEventListener("touchend", shrinkCircle, { passive: false });
-  toggleButton.addEventListener("touchcancel", shrinkCircle, { passive: false });
+  function startAnim(direction, e) {
+    if (e) e.preventDefault();
+    animDirection = direction;
+    if (!rafId) {
+      lastTimestamp = null;
+      rafId = requestAnimationFrame(animateCircle);
+    }
+  }
 
-  // ปุ่ม Hold ขวา (เหมือนกันทุกประการ)
-  toggleButtonRight.addEventListener("mousedown", enlargeCircle);
-  toggleButtonRight.addEventListener("mouseup", shrinkCircle);
-  toggleButtonRight.addEventListener("mouseleave", shrinkCircle);
-  toggleButtonRight.addEventListener("touchstart", enlargeCircle, { passive: false });
-  toggleButtonRight.addEventListener("touchend", shrinkCircle, { passive: false });
-  toggleButtonRight.addEventListener("touchcancel", shrinkCircle, { passive: false });
+  function stopAnim(e) {
+    if (e) e.preventDefault();
+    animDirection = null;
+  }
+
+  // กดแช่ปุ่ม Out: วงกลมยุบลงอย่างนุ่มนวลตามเวลาที่กดค้าง
+  function startShrink(e) { startAnim("shrink", e); }
+  function stopShrink(e) { stopAnim(e); }
+
+  // กดแช่ปุ่ม In: วงกลมขยายขึ้นอย่างนุ่มนวลตามเวลาที่กดค้าง
+  function startGrow(e) { startAnim("grow", e); }
+  function stopGrow(e) { stopAnim(e); }
+
+  // ปุ่ม Out
+  outButton.addEventListener("mousedown", startShrink);
+  outButton.addEventListener("mouseup", stopShrink);
+  outButton.addEventListener("mouseleave", stopShrink);
+  outButton.addEventListener("touchstart", startShrink, { passive: false });
+  outButton.addEventListener("touchend", stopShrink, { passive: false });
+  outButton.addEventListener("touchcancel", stopShrink, { passive: false });
+
+  // ปุ่ม In
+  inButton.addEventListener("mousedown", startGrow);
+  inButton.addEventListener("mouseup", stopGrow);
+  inButton.addEventListener("mouseleave", stopGrow);
+  inButton.addEventListener("touchstart", startGrow, { passive: false });
+  inButton.addEventListener("touchend", stopGrow, { passive: false });
+  inButton.addEventListener("touchcancel", stopGrow, { passive: false });
 
   // ปุ่ม count ตรงกลาง
   middleCountButton.addEventListener("click", function () {
-    middleCount++;
-    middleCountButton.textContent = middleCount;
+    count++;
+    middleCountButton.textContent = count;
   });
 
-  // ปุ่ม count บนสุด
-  topCountButton.addEventListener("click", function () {
-    topCount++;
-    topCountButton.textContent = topCount;
+  // ปุ่ม Start: เริ่ม/หยุด จับเวลา
+  function formatTime(totalSeconds) {
+    var m = Math.floor(totalSeconds / 60);
+    var s = totalSeconds % 60;
+    return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+  }
+
+  startButton.addEventListener("click", function () {
+    if (!timerRunning) {
+      timerRunning = true;
+      startButton.textContent = "Stop";
+      timerInterval = setInterval(function () {
+        elapsedSeconds++;
+        timerDisplay.textContent = formatTime(elapsedSeconds);
+      }, 1000);
+    } else {
+      timerRunning = false;
+      startButton.textContent = "Start";
+      clearInterval(timerInterval);
+    }
   });
 
-  // ปุ่ม reset: reset ทั้งสองตัวนับ
+  // ปุ่ม Reset: หยุดเวลา, รีเซ็ตเวลาและตัวนับทั้งหมด
   resetButton.addEventListener("click", function () {
-    middleCount = 0;
-    topCount = 0;
-    middleCountButton.textContent = middleCount;
-    topCountButton.textContent = topCount;
+    clearInterval(timerInterval);
+    timerRunning = false;
+    elapsedSeconds = 0;
+    timerDisplay.textContent = formatTime(0);
+    startButton.textContent = "Start";
+    count = 0;
+    middleCountButton.textContent = count;
   });
 </script>
 </body>
